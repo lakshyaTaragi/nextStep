@@ -1,8 +1,15 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
+const { ObjectId } = Schema.Types;
 
 // Define the schema
-const UserSchema = new mongoose.Schema({
+const UserSchema = new Schema({
     
+    isMentor: {
+        type: Boolean,
+        required: true
+    },
+
     name:{
         type: String,
         required: true
@@ -25,25 +32,31 @@ const UserSchema = new mongoose.Schema({
     
     city:{
         type: String,
-        required: true,
-        school: {
-            type: String,
-            required: true
-        }
+        required: true
+    },
+
+    school:{
+        type: ObjectId,
+        ref: 'Institute',
+        required: true
     },
 
     coaching:{
-        type: String,
-        centre: {
-            type: String
-        },
+        type: ObjectId,
+        ref: 'Institute'
     },
-    
+
+    college:{
+        type: ObjectId,
+        ref: 'Institute'
+    },
+        
 
 });
 
 // Create a model of that schema
 const User = mongoose.model('User',UserSchema);
+
 
 // export the model
 module.exports = User;
