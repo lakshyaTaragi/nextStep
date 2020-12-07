@@ -10,6 +10,11 @@ const UserSchema = new Schema({
         required: true
     },
 
+    // isOnline: {
+    //     type: Boolean,
+    //     required: true
+    // },
+
     name:{
         type: String,
         required: true

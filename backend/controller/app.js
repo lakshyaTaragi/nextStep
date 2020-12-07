@@ -18,14 +18,8 @@ mongoose.connect(db, {
 .catch(err => console.log(err));
 
 
-
-// Landing page
-app.get('/', (req, res) => {
-    res.send('landing page');
-});
-
-
-const User = require('../model/users/User');
+// Routes
+app.use('/auth', require('./routes/auth'));
 
 
 app.listen(PORT, console.log(`Server running on port ${PORT}`));

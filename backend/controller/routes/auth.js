@@ -1,60 +1,69 @@
-// const express = require('express');
-// const passport = require('passport');
+const express = require('express');
+const passport = require('passport');
 
-// // ! Create router
-// const router = express.Router();
-
-
-// // ! Import User model
-// const User = require('../../model/User');
+//Create router
+const router = express.Router();
 
 
-// // ! Signup page
-// router.get('/signup', (req, res) => {
-//     res.send('signup page');
-// });
+//Import User model
+const User = require('../../model/User');
 
 
-// // ! Signup handle
-// router.post('/signup', (req, res) => {
+//Signup page
+router.get('/signup', (req, res) => {
+    res.send('signup page');
+});
+
+
+//Signup handle
+router.post('/signup', (req, res) => {
     
-//     // ! Destructure request body
-//     const { name, email, password } = req.body;
-//     let errors = [];
+    //Destructure request body
+    const { name, email, password, password2} = req.body;
+    let errors = [];
 
-//     // ! Check required fields 
-//     if(!name || !email || !password){
-//         errors.push({msg:'Please fill all the fields'});
-//     }
+    //Check required fields 
+    if(name || email || password || password2){
+        errors.push({msg:'Please fill all the required fields!'});
+    }
 
-//     // TODO:   ADDITIONAL CHECKS AFTER PROPER MODELS AND FORMS
+    // Check passwords match
+    if(password !== password2){
+        errors.push({msg:'Passwords do not match!'});
+    }
+
+    // Check passwords length
+    if(password.length<8){
+        errors.push({msg:'Passwords must be at least 8 characters long!'});
+    }
+
+    if(errors.length>0){
+        // TODO: check how to send errors[]
+        res.send();
+    } else{
+        //Validation passed
+
+        // Search if username already exists in db
+        User.findOne({email:email})
+        .then(user => {
+            if(user){
+                //User with that email already exists
+                errors.push({msg: 'that email is already re'})
+            }
+        })
+        .catch(err => console.log(err));
+    }
+});
 
 
-//     if(errors.length>0){
-//         // TODO: check how to send errors[]
-//         res.send();
-//     } else{
-//         // ! Validation passed
+//Signin page
+router.get('/signin', (req, res) => {
+    res.send('signin page');
+});
 
-//         // !Search if username already exists in db
-//         User.findOne({email:email})
-//         .then(user => {
-//             if(user){
-//                 // ! User with that email already exists
-//                 errors.push({msg: 'that email is already re'})
-//             }
-//         })
-//         .catch(err => console.log(err));
-//     }
-// });
-
-
-// // ! Signin page
-// router.get('/signin', (req, res) => {
-//     res.send('signin page');
-// });
+// TODO: SIGNIN HANDLE
 
 
 
-// // ! Export router
-// module.exports = router;
+//Export router
+module.exports = router;
