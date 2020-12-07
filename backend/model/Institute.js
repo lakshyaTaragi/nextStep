@@ -1,14 +1,8 @@
 const mongoose = require('mongoose');
 
 const InstituteSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    city: {
-        type: String,
-        required: true
-    },
+    name: String,
+    city: String,
     website: String,
     image: String,
 });

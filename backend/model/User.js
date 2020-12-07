@@ -9,12 +9,7 @@ const UserSchema = new Schema({
         type: Boolean,
         required: true
     },
-
-    // isOnline: {
-    //     type: Boolean,
-    //     required: true
-    // },
-
+    
     name:{
         type: String,
         required: true
