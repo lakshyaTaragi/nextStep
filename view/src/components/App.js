@@ -4,7 +4,7 @@ import { BrowserRouter, Route}  from 'react-router-dom'
 import Landing from './screens/Landing';
 import Home from './screens/Home';
 import Profile from './screens/Profile';
-import Signup from './forms/Signup';
+import Signup from './forms/signup-form/Signup';
 
 
 
