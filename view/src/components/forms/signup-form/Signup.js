@@ -21,21 +21,21 @@ class Signup extends Component {
     }
 
     render(){
-        // ! Deal with this onSubmit and also isMentor(initialize with false to avoid errors) prop
-        const {onSubmit} = this.props;
+
+        // const {onSubmit} = this.props;
         const {page} = this.state;
         return (
             <div>
-                {/* //! onSubmit called --> change page number in state */}
+                Signup as {this.props.isMentor ? 'Mentor':'Mentee'}
                 {page===1 && <FirstPage onSubmit={this.nextPage} />}
-                {page===2 && <SecondPage previousPage={this.previousPage} onSubmit={onSubmit} isMentor={this.props.isMentor}/>}
+                {page===2 && <SecondPage previousPage={this.previousPage} /*onSubmit={onSubmit}*/ isMentor={this.props.isMentor}/>}
             </div>
         );
     }
 };
 
 Signup.propTypes = {
-    onSubmit: PropTypes.func.isRequired,
+    // onSubmit: PropTypes.func.isRequired,
     isMentor: PropTypes.bool.isRequired
 };
 

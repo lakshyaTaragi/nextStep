@@ -1,14 +1,23 @@
-import React from 'react'
-import { Field, reduxForm } from 'redux-form'
-import validate from './validate'
+import React from 'react';
+import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
 
-import {renderField} from '../renderField';
+import validate from './validate';
+import { renderField } from '../renderField';
+import { signUp } from '../../../actions';
+
 
 
 const SecondPage = (props) => {
+    
+    const {signUp, isMentor} = props;
+    const onSubmit = (formValues) => {
+        signUp(formValues, isMentor);
+    };
+    
     const { handleSubmit, pristine, previousPage, submitting } = props;
         return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
             <Field 
                 name="firstName"
                 type="text"
@@ -16,7 +25,7 @@ const SecondPage = (props) => {
                 label="First Name"
             />
             <Field 
-                name="LastName"
+                name="lastName"
                 type="text"
                 component={renderField}
                 label="Last Name"
@@ -28,7 +37,7 @@ const SecondPage = (props) => {
                 label="City"
             />
             <Field 
-                name="schoolName"
+                name="school"
                 type="text"
                 component={renderField}
                 label="School"
@@ -40,7 +49,7 @@ const SecondPage = (props) => {
                 label="School-city"
             />
             <Field 
-                name="coachingName"
+                name="coaching"
                 type="text"
                 component={renderField}
                 label="Coaching"
@@ -51,7 +60,7 @@ const SecondPage = (props) => {
                 component={renderField}
                 label="Coaching-city"
             />
-            {props.isMentor && <Field 
+            {isMentor && <Field 
                 name="college"
                 type="text"
                 component={renderField}
@@ -70,9 +79,13 @@ const SecondPage = (props) => {
       );
 };
     
-export default reduxForm({
+const formWrapped = reduxForm({
     form: 'signup', 
     destroyOnUnmount: false,
     forceUnregisterOnUnmount: true, 
     validate
-  })(SecondPage)
+})(SecondPage);
+
+export default connect(null,{
+    signUp
+})(formWrapped);

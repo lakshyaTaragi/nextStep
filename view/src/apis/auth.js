@@ -1,6 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-    // TODO: Add base url accordingly
-    baseURL: ''
+    baseURL: 'http://localhost:5000/auth'
 });

@@ -1,5 +1,7 @@
 const express = require('express');
 const passport = require('passport');
+const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 //Create router
 const router = express.Router();
@@ -14,45 +16,38 @@ router.get('/signup', (req, res) => {
     res.send('signup page');
 });
 
-
-//Signup handle
+// Signup handle
 router.post('/signup', (req, res) => {
+
+    const form = req.body;
+    const name = form.firstName+" "+form.lastName;
+    const school = {
+        name:form.school,
+        city:form.schoolCity
+    };
     
-    //Destructure request body
-    const { name, email, password, password2} = req.body;
-    let errors = [];
+    const coaching = {};
+    coaching.name = form.coaching ? form.coaching:null;
+    coaching.city = form.coaching&&form.coachingCity ? form.coachingCity:null;
 
-    //Check required fields 
-    if(name || email || password || password2){
-        errors.push({msg:'Please fill all the required fields!'});
-    }
+    const college = {name:form.college};
+    
+    var newUser = {...req.body, name, school, coaching, college};
+    newUser = _.omit(newUser,'firstName','lastName','password2','schoolCity','coachingCity');
 
-    // Check passwords match
-    if(password !== password2){
-        errors.push({msg:'Passwords do not match!'});
-    }
+    bcrypt.genSalt(12, (err, salt)=>{
+        bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if(err) throw err;
+            // set pw to hashed
+            newUser.password = hash;           
+        });
+    });
 
-    // Check passwords length
-    if(password.length<8){
-        errors.push({msg:'Passwords must be at least 8 characters long!'});
-    }
 
-    if(errors.length>0){
-        // TODO: check how to send errors[]
-        res.send();
-    } else{
-        //Validation passed
-
-        // Search if username already exists in db
-        User.findOne({email:email})
-        .then(user => {
-            if(user){
-                //User with that email already exists
-                errors.push({msg: 'that email is already re'})
-            }
-        })
-        .catch(err => console.log(err));
-    }
+    
+   
+    
+    
 });
 
 

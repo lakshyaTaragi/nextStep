@@ -23,7 +23,7 @@ const validate = formValues => {
 
     if (!formValues.city) {errors.city = 'Required'}
     
-    if (!formValues.schoolName) {errors.schoolName = 'Required'}
+    if (!formValues.school) {errors.school = 'Required'}
     if (!formValues.schoolCity) {errors.schoolCity = 'Required'}
     
 
