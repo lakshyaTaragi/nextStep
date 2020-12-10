@@ -69,9 +69,11 @@ router.post('/signup', (req, res) => {
 });
 
 
-// TODO: SIGNIN HANDLE
-router.post('/signin', (req, res) => {
-    
+// Signin Handle
+router.post('/signin', (req, res, next) => {
+    passport.authenticate('local');
+    // ! success/failure logics
+
 });
 
 
