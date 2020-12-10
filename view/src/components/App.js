@@ -5,6 +5,7 @@ import Landing from './screens/Landing';
 import Home from './screens/Home';
 import Profile from './screens/Profile';
 import Signup from './forms/signup-form/Signup';
+import SignIn from './forms/SignIn';
 
 
 
@@ -27,6 +28,7 @@ const App = () => {
                         <Signup {...props} isMentor={false} />
                     )}
                 />
+                <Route path="/signin" exact component={SignIn} />
             </BrowserRouter>
         </div>
     );

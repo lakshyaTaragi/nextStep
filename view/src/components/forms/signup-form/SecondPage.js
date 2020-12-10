@@ -10,12 +10,11 @@ import { signUp } from '../../../actions';
 
 const SecondPage = (props) => {
     
-    const {signUp, isMentor} = props;
+    const { handleSubmit, pristine, previousPage, submitting, signUp, isMentor } = props;
     const onSubmit = (formValues) => {
         signUp(formValues, isMentor);
     };
     
-    const { handleSubmit, pristine, previousPage, submitting } = props;
         return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Field 

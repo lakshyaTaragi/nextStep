@@ -45,7 +45,7 @@ router.post('/signup', (req, res) => {
             if(err) throw err;
             // set pw to hashed
             newUser.password = hash;
-            
+
             // save in user db
             new User(newUser).save()
             .then(() => console.log('new user saved'))
@@ -63,11 +63,16 @@ router.post('/signup', (req, res) => {
             .then(()=>console.log('college saved'))
             .catch(err => console.log(err));
         });
-    }); 
+    });
+
+    res.send(newUser); 
 });
 
-// TODO: SIGNIN HANDLE
 
+// TODO: SIGNIN HANDLE
+router.post('/signin', (req, res) => {
+    
+});
 
 
 //Export router
