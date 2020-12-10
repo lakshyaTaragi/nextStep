@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
+const Institute = require('./Institute');
 
 // Define the schema
 const UserSchema = new Schema({
