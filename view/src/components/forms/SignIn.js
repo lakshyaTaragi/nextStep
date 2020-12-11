@@ -12,6 +12,7 @@ const SignIn = (props) => {
 
     return(
         <form onSubmit={handleSubmit(onSubmit)}>
+            <div>{props.message}</div>
             <Field
                 name="username"
                 type="text"
@@ -50,6 +51,10 @@ const formWrapped = reduxForm({
     validate
 })(SignIn);
 
-export default connect(null, {
+const mapStateToProps = (state) => {
+    return {message: state.auth.message};
+}
+
+export default connect(mapStateToProps, {
     signIn
 })(formWrapped);

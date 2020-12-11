@@ -10,23 +10,26 @@ module.exports = (passport) => {
             // Match User
             User.findOne({username:username})
             .then(user => {
+                
+                // User not found
                 if(!user) {
-                    return done(null, false, {message: 'This username is not registered'});
+                    return done(null, false, {message: 'Username or Password is incorrect'});
                 }
 
-                // Match password
+                // User found --> Match password
                 bcrypt.compare(password, user.password, (err, isMatched) => {
                     if(err) throw err;
-                    if(isMatched) return done(null, user);
-                    else return done(null, false, {message:'Password is incorrect'});
+                    if(isMatched) return done(null, user, {message: 'Logged in as '+username});
+                    else return done(null, false, {message:'Username or Password is incorrect'});
                 });
-            });
+            })
+            .catch(err => console.log(err));
         })
     );
+    passport.serializeUser((user, done) => done(null, user.id));
+
+    passport.deserializeUser((id, done) => {
+        User.findById(id, (err, user) => done(err, user));
+    });
 };
 
-passport.serializeUser((user, done) => done(null, user.id));
-
-passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => done(err, user));
-});

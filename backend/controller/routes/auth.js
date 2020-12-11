@@ -26,14 +26,10 @@ router.post('/signup', (req, res) => {
     const coachingObj = {};
     coachingObj.name = form.coaching ? form.coaching:null;
     coachingObj.city = form.coaching && form.coachingCity ? form.coachingCity:null;
-    const coaching = new Coaching(coachingObj);
-    
+    const coaching = new Coaching(coachingObj);    
  
     // Make college object
     const college = new College({name:form.college});
-    
-    console.log(form);
-
 
     var newUser = {...req.body, name, school:school._id, coaching:coaching._id, college: college._id};
     newUser = _.omit(newUser,'firstName','lastName','password2','schoolCity','coachingCity');
@@ -64,17 +60,29 @@ router.post('/signup', (req, res) => {
             .catch(err => console.log(err));
         });
     });
-
     res.send(newUser); 
 });
 
 
 // Signin Handle
 router.post('/signin', (req, res, next) => {
-    passport.authenticate('local');
-    // ! success/failure logics
-
+    passport.authenticate('local', (err, user, info) => {
+        if(err) console.log(err);
+        return res.send({info, user});
+        // info is sent only if user is not found
+    })(req, res, next);
 });
+
+
+
+
+
+// TODO: Logout handle
+// router.get('/logout', (req, res) => {
+//     res.logout();
+//     req.flash('success_msg', 'You are logged out');
+//     res.redirect('/users/login');
+// });
 
 
 //Export router

@@ -9,8 +9,11 @@ const Landing = () => {
             </div>
             Register as a:
             <div>
-                <Link to='/signup/mentor'>Mentor</Link>                <br/>                <Link to='/signup/mentee'>Mentee</Link>
+                <Link to='/signup/mentor'>Mentor</Link>
+                <br/>
+                <Link to='/signup/mentee'>Mentee</Link>
             </div>
+            <div><Link to='/signin'>Login</Link></div>
             <Link to="/home">Go to home page</Link>
         </div>
     );

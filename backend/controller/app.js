@@ -14,7 +14,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
 
-const PORT = process.env.PORT || 5000;
 
 // Passport config 
 require('./config/passport')(passport);
@@ -30,6 +29,7 @@ mongoose.connect(db, {
 .then(() => console.log('MongoDB connected...'))
 .catch(err => console.log(err));
 
+
 // express-session middleware
 app.use(
     session({
@@ -39,10 +39,13 @@ app.use(
     })
 );
 
+
 // passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+const PORT = process.env.PORT || 5000;
 
 // Routes
 app.use('/auth', require('./routes/auth'));
