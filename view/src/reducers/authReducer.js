@@ -15,11 +15,10 @@ export default (state = INITIAL_STATE, action) => {
     switch(action.type){
         case SIGN_IN:
             const {user,info} = action.payload;
-            // localStorage.setItem('currentUser',JSON.stringify(action.payload));  
             return {...state, isSignedIn: user?true:state.isSignedIn, currentUser:user?user:state.currentUser, message:info.message};
 
         case SIGN_OUT:
-            return {...state, isSignedIn:false, currentUser: null, message:'Logged out from '/*+user?user.username:''*/};
+            return {...state, isSignedIn:false, message:'Logged out from '+state.currentUser.username, currentUser: null};
 
         default:
             return state;

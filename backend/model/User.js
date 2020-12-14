@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
-const Institute = require('./Institute');
 
 // Define the schema
 const UserSchema = new Schema({
@@ -51,6 +50,11 @@ const UserSchema = new Schema({
         type: ObjectId,
         ref: 'Institute'
     },
+
+    myPosts: {
+        type: ObjectId,
+        ref: 'Post'
+    }
         
 
 });

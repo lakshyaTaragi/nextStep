@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {Field, reduxForm} from 'redux-form';
 import { connect } from 'react-redux';
 
@@ -6,7 +6,9 @@ import { renderField } from './renderField';
 import { signIn } from '../../actions';
 
 const SignIn = (props) => {
-    const { handleSubmit, pristine, submitting, signIn } = props;
+    const { handleSubmit, pristine, reset, submitting, signIn } = props;
+
+    useEffect(()=>{reset()},[]);
 
     const onSubmit = formValues => signIn(formValues);
 
@@ -17,13 +19,13 @@ const SignIn = (props) => {
                 name="username"
                 type="text"
                 component={renderField}
-                Label="Username"
+                label="Username"
             />
             <Field
                 name="password"
                 type="password"
                 component={renderField}
-                Label="Password"
+                label="Password"
             />
             <div>
                 <button type="submit" disabled={pristine || submitting}>

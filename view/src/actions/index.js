@@ -2,7 +2,7 @@ import { Redirect } from 'react-router-dom';
 
 import auth from '../apis/auth';
 import users from '../apis/users';
-import { SIGN_IN, SIGN_OUT } from './types';
+import { SIGN_IN, SIGN_OUT, CREATE_POST, UPDATE_POST, DELETE_POST } from './types';
 import history from '../history';
 
 
@@ -43,3 +43,23 @@ export const signOut = () => async dispatch => {
 //    if(currentUser.username === pathUsername) return true;
 //    return false;
 // };
+
+
+// ! Create post
+export const createPost = formValues => async () => {
+
+     console.log('new post created');
+} 
+
+// ! update post
+export const updatePost = formValues => async () => {
+
+    console.log(' post updated');
+} 
+
+
+// ! delete post
+export const deletePost = formValues => async () => {
+
+    console.log('post deleted');
+} 

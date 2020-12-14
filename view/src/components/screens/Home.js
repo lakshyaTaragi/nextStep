@@ -8,4 +8,7 @@ const Home = () => {
     );
 };
 
+// ! Fetch posts
+
+
 export default Home;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, Redirect}  from 'react-router-dom'
+import { Router, Route}  from 'react-router-dom'
 import { connect } from 'react-redux';
 
 import Landing from './screens/Landing';
@@ -7,8 +7,10 @@ import Home from './screens/Home';
 import Profile from './screens/Profile';
 import Signup from './forms/signup-form/Signup';
 import SignIn from './forms/SignIn';
+import Post from './forms/Post';
 
 import history from '../history';
+import { signOut } from '../actions';
 
 
 const App = (props) => {
@@ -57,7 +59,13 @@ const App = (props) => {
                     }
                 />
 
+                <Route path="/post" exact component={Post} />
+
+
             </Router>
+            <button type="button" onClick={props.signOut}>
+                Logout
+            </button>
         </div>
     );
 };
@@ -66,5 +74,7 @@ const mapStateToProps = state => {
     return {currentUser:state.auth.currentUser};
 };
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, {
+    signOut
+})(App);
 
