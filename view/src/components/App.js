@@ -1,5 +1,6 @@
 import React from 'react';
-import { Router, Route, Switch}  from 'react-router-dom'
+import { Router, Route, Redirect}  from 'react-router-dom'
+import { connect } from 'react-redux';
 
 import Landing from './screens/Landing';
 import Home from './screens/Home';
@@ -10,8 +11,8 @@ import SignIn from './forms/SignIn';
 import history from '../history';
 
 
-
-const App = () => {
+const App = (props) => {
+    console.log('Current User ', props.currentUser.username);
     return (
         <div>
             <Router history={history}>
@@ -22,6 +23,7 @@ const App = () => {
                 
                 <Route
                     path='/signup/mentor'
+                    exact
                     render={(props) => (
                         <Signup {...props} isMentor={true} />
                     )}
@@ -29,6 +31,7 @@ const App = () => {
                 
                 <Route
                     path='/signup/mentee'
+                    exact
                     render={(props) => (
                         <Signup {...props} isMentor={false} />
                     )}
@@ -36,11 +39,31 @@ const App = () => {
                 
                 <Route path="/signin" exact component={SignIn} />
                 
-                <Route path="/:id/profile" exact component={Profile} />
+                <Route
+                    path="/:username/profile"
+                    exact
+                    render={(propers) => {
+
+                            const { match: { params } } = propers;
+                            // console.log(params.username);
+                            if(props.currentUser) console.log(props.currentUser.username);
+                            if(props.currentUser && params.username===props.currentUser.username){
+                                return <Profile {...propers}/>;
+                            } else{
+                                return history.push('/signin');
+                            }                        
+                        }                        
+                    }
+                />
 
             </Router>
         </div>
     );
 };
 
-export default App;
+const mapStateToProps = state => {
+    return {currentUser:state.auth.currentUser};
+};
+
+export default connect(mapStateToProps)(App);
+

@@ -33,11 +33,11 @@ mongoose.connect(db, {
 // express-session middleware
 app.use(
     session({
-        secret:'my_secret',
-        resave: true,
-        saveUninitialized: true
+      secret: 'secret',
+      resave: true,
+      saveUninitialized: true
     })
-);
+  );
 
 
 // passport middleware
@@ -49,6 +49,7 @@ const PORT = process.env.PORT || 5000;
 
 // Routes
 app.use('/auth', require('./routes/auth'));
+app.use('/users', require('./routes/users'));
 
 
 app.listen(PORT, console.log(`Server running on port ${PORT}`));

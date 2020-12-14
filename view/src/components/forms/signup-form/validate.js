@@ -15,8 +15,8 @@ const validate = formValues => {
 
     if (!formValues.password) {
         errors.password = 'Required'
-    } else if (formValues.password.length < 8) {
-        errors.password = 'Password must be atleast 8 characters long'
+    } else if (formValues.password.length < 1) {
+        errors.password = 'Password must be atleast 1 characters long'
     } else if(formValues.password !== formValues.password2){
         errors.password2 = 'Passwords do not match' 
     }

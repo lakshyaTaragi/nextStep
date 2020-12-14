@@ -69,7 +69,6 @@ router.post('/signin', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if(err) console.log(err);
         return res.send({info, user});
-        // info is sent only if user is not found
     })(req, res, next);
 });
 
@@ -78,11 +77,11 @@ router.post('/signin', (req, res, next) => {
 
 
 // TODO: Logout handle
-// router.get('/logout', (req, res) => {
-//     res.logout();
-//     req.flash('success_msg', 'You are logged out');
-//     res.redirect('/users/login');
-// });
+router.get('/signout', (req, res) => {
+    req.logOut();
+    // ! change this to an appropriate response
+    res.send('logged out');
+});
 
 
 //Export router
