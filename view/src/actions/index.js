@@ -12,13 +12,16 @@ export const signUp = (formValues, isMentor) => async dispatch => {
     dispatch(signIn(newUser.data));
 };
 export const signIn = (formValues) => async dispatch => {
-    const response = await auth.post('/signin', formValues);  
+    
+    const response = await auth.post('/signin', formValues); 
+    localStorage.setItem('currentUser',JSON.stringify(response.data)); 
     dispatch({type:SIGN_IN, payload:response.data});    
     const {user} = response.data; 
     if(user) history.push(`${user.username}/profile`);
 };
 
 export const signOut = () => async dispatch => {
+    localStorage.removeItem('currentUser'); 
     const response = await auth.get('/signout');
     dispatch({type: SIGN_OUT});
     

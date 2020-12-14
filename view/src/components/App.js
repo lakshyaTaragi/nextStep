@@ -12,7 +12,8 @@ import history from '../history';
 
 
 const App = (props) => {
-    console.log('Current User ', props.currentUser.username);
+    // console.log('Current User ', props.currentUser.username);
+    console.log(JSON.parse(localStorage.getItem('currentUser')));
     return (
         <div>
             <Router history={history}>
