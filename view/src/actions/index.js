@@ -9,6 +9,7 @@ import history from '../history';
 
 export const signUp = (formValues, isMentor) => async dispatch => {
     const newUser = await auth.post('/signup', {...formValues, isMentor});
+    //! show a login button and the use signIn in it --> later
     dispatch(signIn(newUser.data));
 };
 export const signIn = (formValues) => async dispatch => {

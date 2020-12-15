@@ -10,33 +10,37 @@ const FirstPage = (props) => {
     // already present in props by redux-form
 
     return (
-        <form onSubmit={handleSubmit}>
-            <Field 
+        <form className="ui form" onSubmit={handleSubmit}>
+            <Field
+                className="field" 
                 name="username"
                 type="text"
                 component={renderField}
                 label="Unique Username"
             />
-            <Field 
+            {/* <Field
+                className="field"  
                 name="email"
                 type="email"
                 component={renderField}
                 label="Email-id"
-            />
-            <Field 
+            /> */}
+            <Field
+                className="field"  
                 name="password"
                 type="password"
                 component={renderField}
                 label="Password"
             />
-            <Field 
+            {/* <Field
+                className="field"  
                 name="password2"
                 type="password"
                 component={renderField}
                 label="Confirm Password"
-            />
+            /> */}
             <div>
-                <button type="submit" className="next">
+                <button className="positive ui button" type="submit" className="next">
                     Next
                 </button>
             </div>            

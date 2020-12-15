@@ -23,7 +23,7 @@ const SecondPage = (props) => {
                 component={renderField}
                 label="First Name"
             />
-            <Field 
+            {/* <Field 
                 name="lastName"
                 type="text"
                 component={renderField}
@@ -64,7 +64,7 @@ const SecondPage = (props) => {
                 type="text"
                 component={renderField}
                 label="College"
-            />}
+            />} */}
             
           <div>
             <button type="button" className="previous" onClick={previousPage}>

@@ -12,6 +12,9 @@ import Post from './forms/Post';
 import history from '../history';
 import { signOut } from '../actions';
 
+import AllChats from './screens/temporary-chat/AllChats';
+import Chat from './screens/temporary-chat/Chat';
+
 
 const App = (props) => {
     // console.log('Current User ', props.currentUser.username);
@@ -61,11 +64,15 @@ const App = (props) => {
 
                 <Route path="/post" exact component={Post} />
 
+                <Route path="/allchats" exact component={AllChats} />
+                <Route path="/chat" exact component={Chat} />
+
 
             </Router>
-            <button type="button" onClick={props.signOut}>
+            <button className="negative ui button" type="button" onClick={props.signOut}>
                 Logout
             </button>
+
         </div>
     );
 };
