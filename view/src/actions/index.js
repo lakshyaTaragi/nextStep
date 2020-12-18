@@ -5,15 +5,13 @@ import users from '../apis/users';
 import { SIGN_IN, SIGN_OUT, CREATE_POST, UPDATE_POST, DELETE_POST } from './types';
 import history from '../history';
 
-
-
 export const signUp = (formValues, isMentor) => async dispatch => {
     const newUser = await auth.post('/signup', {...formValues, isMentor});
     //! show a login button and the use signIn in it --> later
     dispatch(signIn(newUser.data));
 };
+
 export const signIn = (formValues) => async dispatch => {
-    
     const response = await auth.post('/signin', formValues); 
     localStorage.setItem('currentUser',JSON.stringify(response.data)); 
     dispatch({type:SIGN_IN, payload:response.data});    
@@ -25,9 +23,6 @@ export const signOut = () => async dispatch => {
     localStorage.removeItem('currentUser'); 
     const response = await auth.get('/signout');
     dispatch({type: SIGN_OUT});
-    
-    // ! remove from localStorage
-
 };
 
 

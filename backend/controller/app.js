@@ -56,11 +56,27 @@ const server = app.listen(PORT, console.log(`Server running on port ${PORT}`));
 
 const io = require('socket.io')(server, {
   cors:{
-    origin:'http://localhost:3000',
+    // origin:'http://localhost:3000',
+    origin:'*',
     methods: ["GET", "POST"]
   }
 });
 
+//TODO : later we will use the friend request functionality 
+
 io.on('connection', (socket)=>{
-  console.log('new ws connection');  
+
+  socket.join('onlineUsers');
+
+  socket.on('userComesOnline',(newUser)=>{
+    userComesOnline(newUser);
+    socket.emit('allOnlineUsers',fetchOnlineUsers());
+    socket.broadcast.to('onlineUsers').emit('newOnlineUser',newUser);    
+  });
+
+  
+  // socket.on('newUser',(newUser)=>{
+  //   socket.broadcast.to('onlineUsers').emit('newOnlineUser',newUser);
+  // });
+
 });
