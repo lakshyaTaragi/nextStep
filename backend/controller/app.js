@@ -71,25 +71,33 @@ var clients = [];
 io.on('connection', (socket)=>{
 
   socket.on('iAmOnline',(newUser)=>{
+    
     socket.id = newUser._id;
 
+    // add to clients[] only when not already present
     if(_.findIndex(clients,(client)=> client===newUser._id)===-1){
-      // 
+      clients.push(newUser._id);
     }
-    clients.push(newUser._id);
     console.log(clients);
   });
 
   socket.on('privateRoom',(room)=>{
     socket.join(room);
-    console.log(socket.rooms);
+    socket.broadcast.emit('onlineUsers',clients);
   });
   
-  socket.on('disconnect',()=>{
-    _.remove(clients,(client)=>{
-      return client === socket.id;
-    });
+  socket.on('signout',()=>{
+    _.remove(clients,client => client === socket.id);
+    socket.disconnect();
+    io.emit('onlineUsers',clients);
     console.log(clients);
+  });
+
+  
+  socket.on('disconnect',()=>{
+    _.remove(clients,client => client === socket.id);
+    console.log(clients);
+    io.emit('onlineUsers',clients);
   });
 
 

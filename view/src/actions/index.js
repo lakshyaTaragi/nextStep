@@ -20,7 +20,7 @@ export const signIn = (formValues) => async dispatch => {
 };
 
 export const signOut = () => async dispatch => {
-    localStorage.removeItem('currentUser'); 
+    localStorage.removeItem('currentUser');
     const response = await auth.get('/signout');
     dispatch({type: SIGN_OUT});
 };
