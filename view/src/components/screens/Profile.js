@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
-import { signOut, allOnlineUsers, addOnlineUser } from '../../actions';
+import { signOut } from '../../actions';
 
 
 // socket --> //! try to move to api folder later
@@ -10,23 +11,23 @@ import { io } from 'socket.io-client';
 
 
 const Profile = (props) => {
+
+    const [onlineUsers,setOnlineUsers] = useState([]);
     
+    var room = props.currentUser._id.toString();
+    console.log(room);
        
-    const socket = io('localhost:5000/'); //! ~localhost:5000/chat later
-    
+    const socket = io('localhost:5000/',props.currentUser); //! ~localhost:5000/chat later
     socket.on('connect', () => {
         console.log('online',socket.id);
-        socket.emit('userComesOnline', props.currentUser);
-    });
-    
-    socket.on('allOnlineUsers',(allOnlineUsers)=>{
-        props.allOnlineUsers(allOnlineUsers);
+        socket.emit('iAmOnline',props.currentUser);
+        socket.emit('privateRoom',room);
+        
     });
 
-    socket.on('newOnlineUser',(newUser)=>{
-        props.addOnlineUser(newUser);
-    });
     
+
+   
     
     
     
@@ -63,12 +64,9 @@ const mapStateToProps = (state) => {
     return {
         message: state.auth.message,
         currentUser:state.auth.currentUser,
-        onlineUsers:state.auth.onlineUsers
     };
 }
 
 export default connect(mapStateToProps,{
     signOut,
-    allOnlineUsers,
-    addOnlineUser
 })(Profile);

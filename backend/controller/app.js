@@ -4,9 +4,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const passport = require('passport');
+const _ = require('lodash');
 
 
 const app = express();
+
+const {userComesOnline, fetchOnlineUsers} = require('./chat/utils/users');
 
 // !Checkout app.use(express.urlencoded({ extended: false }));
 app.use(cors());
@@ -63,20 +66,32 @@ const io = require('socket.io')(server, {
 });
 
 //TODO : later we will use the friend request functionality 
+var clients = [];
 
 io.on('connection', (socket)=>{
 
-  socket.join('onlineUsers');
+  socket.on('iAmOnline',(newUser)=>{
+    socket.id = newUser._id;
 
-  socket.on('userComesOnline',(newUser)=>{
-    userComesOnline(newUser);
-    socket.emit('allOnlineUsers',fetchOnlineUsers());
-    socket.broadcast.to('onlineUsers').emit('newOnlineUser',newUser);    
+    if(_.findIndex(clients,(client)=> client===newUser._id)===-1){
+      // 
+    }
+    clients.push(newUser._id);
+    console.log(clients);
   });
 
+  socket.on('privateRoom',(room)=>{
+    socket.join(room);
+    console.log(socket.rooms);
+  });
   
-  // socket.on('newUser',(newUser)=>{
-  //   socket.broadcast.to('onlineUsers').emit('newOnlineUser',newUser);
-  // });
+  socket.on('disconnect',()=>{
+    _.remove(clients,(client)=>{
+      return client === socket.id;
+    });
+    console.log(clients);
+  });
+
+
 
 });
