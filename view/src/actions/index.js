@@ -2,6 +2,8 @@ import { Redirect } from 'react-router-dom';
 
 import auth from '../apis/auth';
 import users from '../apis/users';
+import posts from '../apis/posts';
+
 import { SIGN_IN, SIGN_OUT, CREATE_POST, UPDATE_POST, DELETE_POST } from './types';
 import history from '../history';
 
@@ -40,22 +42,27 @@ export const signOut = () => async dispatch => {
 //    return false;
 // };
 
+//! *****************************************************************************
+//! POSTS RELATED ACTIONS
 
 // ! Create post
-export const createPost = formValues => async () => {
+export const createPost = (formValues,userId) => async () => {
+    console.log('new post created');
+    const response = await posts.post(
+        '/createpost',
+        {...formValues, userId}
+    );
+    console.log(response);
 
-     console.log('new post created');
 } 
 
-// ! update post
-export const updatePost = formValues => async () => {
-
+// ! Update post
+export const updatePost = (formValues,userId) => async () => {
     console.log(' post updated');
 } 
 
 
-// ! delete post
-export const deletePost = formValues => async () => {
-
+// ! Delete post
+export const deletePost = (formValues,userId) => async () => {
     console.log('post deleted');
 } 

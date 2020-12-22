@@ -17,8 +17,28 @@ import Chat from './screens/temporary-chat/Chat';
 
 
 const App = (props) => {
-    // console.log('Current User ', props.currentUser.username);
+
+    //TODO: DELETE later
     console.log(JSON.parse(localStorage.getItem('currentUser')));
+
+    const authenticatedRoute = (Component,routeName) => {
+        return(
+            <Route
+                path={`/:username/${routeName}`}
+                exact
+                render={(propers) => {
+                        const { match: { params } } = propers;
+                        if(props.currentUser && params.username===props.currentUser.username){
+                            return <Component {...propers}/>;
+                        } else{
+                            return history.push('/signin');
+                        }                        
+                    }                        
+                }
+            />
+        );
+    }; 
+
     return (
         <div>
             <Router history={history}>
@@ -51,7 +71,6 @@ const App = (props) => {
                     render={(propers) => {
 
                             const { match: { params } } = propers;
-                            // console.log(params.username);
                             if(props.currentUser) console.log(props.currentUser.username);
                             if(props.currentUser && params.username===props.currentUser.username){
                                 return <Profile {...propers}/>;
@@ -62,16 +81,17 @@ const App = (props) => {
                     }
                 />
 
-                <Route path="/post" exact component={Post} />
+                {authenticatedRoute(Post,'createpost')}
 
                 <Route path="/allchats" exact component={AllChats} />
                 <Route path="/chat" exact component={Chat} />
 
 
             </Router>
-            <button className="negative ui button" type="button" onClick={props.signOut}>
+            {props.currentUser?<button className="negative ui button" type="button" onClick={props.signOut}>
                 Logout
-            </button>
+            </button>:null}
+            
 
         </div>
     );

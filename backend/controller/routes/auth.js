@@ -46,14 +46,17 @@ router.post('/signup', (req, res) => {
             new User(newUser).save()
             .then(() => console.log('new user saved'))
             .catch(err => console.log(err));
+            
             // Save in school db
             school.save()
             .then(()=>console.log('school saved'))
             .catch(err => console.log(err));
+            
             // Save in coaching db
             coaching.save()
             .then(()=>console.log('coaching saved'))
             .catch(err => console.log(err));
+            
             // Save in college db
             college.save()
             .then(()=>console.log('college saved'))

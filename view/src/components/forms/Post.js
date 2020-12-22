@@ -9,9 +9,12 @@ import { renderField } from './renderField';
 import {createPost, updatePost, deletePost} from '../../actions';
 
 const Post = (props) => {
-    const { handleSubmit, pristine, submitting, createPost, updatePost, deletePost } = props;
+    const { currentUser,
+        createPost, updatePost, deletePost, 
+        handleSubmit, pristine, submitting
+    } = props;
 
-    const onSubmit = formValues => createPost(formValues);
+    const onSubmit = formValues => createPost(formValues,currentUser._id);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -48,7 +51,7 @@ Post.propTypes = {
 };
 
 const formWrapped = reduxForm({
-    form: 'signin',
+    form: 'post',
     destroyOnUnmount: false,
     forceUnregisterOnUnmount: true,
     validate

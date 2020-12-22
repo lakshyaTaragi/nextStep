@@ -51,10 +51,10 @@ const UserSchema = new Schema({
         ref: 'Institute'
     },
 
-    myPosts: {
+    myPosts: [{
         type: ObjectId,
         ref: 'Post'
-    },
+    }],
 
     chats:[{
         person:{
