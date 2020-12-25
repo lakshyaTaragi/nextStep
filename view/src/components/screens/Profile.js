@@ -5,7 +5,7 @@ import _ from 'lodash';
 // socket --> //! try to move to api folder later
 import { io } from 'socket.io-client';
 
-import { signOut } from '../../actions';
+import { signOut, fetchMyPosts } from '../../actions';
 
 
 
@@ -14,16 +14,24 @@ import { signOut } from '../../actions';
 const Profile = (props) => {
     const socket = io('localhost:5000/'); //! ~localhost:5000/chat later
 
-    const [onlineUsers,setOnlineUsers] = useState([]); 
+    const [onlineUsers, setOnlineUsers] = useState([]); 
+    const [posts, setPosts] = useState([]); 
+    
 
     useEffect(()=>{
-        // console.log('initial render');
+
         var room = props.currentUser._id.toString();
         
         socket.on('connect', () => {
             // console.log('online',socket.id);
             socket.emit('iAmOnline',props.currentUser);
             socket.emit('privateRoom',room);
+        });
+        // fetch personal posts
+        props.fetchMyPosts(props.currentUser._id)
+        .then((response) => {
+            // console.log(response);
+            setPosts(response);
         });
     },[]);
     
@@ -44,15 +52,28 @@ const Profile = (props) => {
 
     const createOnlineUsersList = (onlineUsers) => {
         return onlineUsers.map(onlineUser => {
-            return (
-                <div className="item" key={onlineUser}>
-                    <img className="ui avatar image" src="/images/avatar/small/daniel.jpg" />
-                    <div className="content">
-                    <div className="header">Paulo</div>
-                    This is {onlineUser}
+            if(onlineUser!==props.currentUser._id){
+                return (
+                    <div className="item" key={onlineUser}>
+                        <img className="ui avatar image" src="/images/avatar/small/daniel.jpg" />
+                        <div className="content">
+                        <div className="header">Paulo</div>
+                        This is {onlineUser}
+                        </div>
                     </div>
+                );            
+            }
+        });
+    };
+
+    const renderMyPostsList = (myPosts) => {
+        return myPosts.map(post => {
+            return (
+                <div className="item" key={post._id}>
+                    <div className="post-title">{post.title}</div>
+                    <div className="post-content">{post.content}</div>
                 </div>
-            );            
+            );
         });
     };
     
@@ -67,6 +88,7 @@ const Profile = (props) => {
             </button>
             <ul>
             {createOnlineUsersList(onlineUsers)}
+            {renderMyPostsList(posts)}
             </ul>
         </div>
     );
@@ -81,4 +103,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps,{
     signOut,
+    fetchMyPosts
 })(Profile);

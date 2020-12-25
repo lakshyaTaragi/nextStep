@@ -66,3 +66,8 @@ export const updatePost = (formValues,userId) => async () => {
 export const deletePost = (formValues,userId) => async () => {
     console.log('post deleted');
 } 
+
+export const fetchMyPosts = (userId) => async () => {
+    const response = await posts.get(`/myposts/${userId}`);
+    return response.data;
+};

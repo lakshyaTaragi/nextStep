@@ -79,7 +79,7 @@ io.on('connection', (socket)=>{
     if(_.findIndex(clients,(client)=> client===newUser._id)===-1){
       clients.push(newUser._id);
     }
-    console.log(clients);
+    // console.log(clients);
   });
 
   socket.on('privateRoom',(room)=>{
@@ -91,13 +91,13 @@ io.on('connection', (socket)=>{
     _.remove(clients,client => client === socket.id);
     socket.disconnect();
     io.emit('onlineUsers',clients);
-    console.log(clients);
+    // console.log(clients);
   });
 
   
   socket.on('disconnect',()=>{
     _.remove(clients,client => client === socket.id);
-    console.log(clients);
+    // console.log(clients);
     io.emit('onlineUsers',clients);
   });
 

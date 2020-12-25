@@ -43,7 +43,14 @@ router.post('/createpost', (req, res) => {
 
 });
 
-
+// for fetching personal posts
+router.get('/myposts/:userid', (req, res) => {
+    const {userid} = req.params;
+    Post.find({postedBy:objectId(userid)}, (err, myposts)=> {
+        if(err) throw err;
+        else res.send(myposts);
+    });
+});
 
 
 // export router
