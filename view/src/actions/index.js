@@ -17,8 +17,6 @@ export const signIn = (formValues) => async dispatch => {
     const response = await auth.post('/signin', formValues); 
     localStorage.setItem('currentUser',JSON.stringify(response.data)); 
     dispatch({type:SIGN_IN, payload:response.data});    
-    const {user} = response.data; 
-    if(user) history.push(`${user.username}/profile`);
 };
 
 export const signOut = () => async dispatch => {
@@ -46,19 +44,27 @@ export const signOut = () => async dispatch => {
 //! POSTS RELATED ACTIONS
 
 // ! Create post
-export const createPost = (formValues,userId) => async () => {
-    console.log('new post created');
+export const createPost = (formValues, userId, username) => async () => {
     const response = await posts.post(
         '/createpost',
         {...formValues, userId}
     );
-    console.log(response);
-
+    // if(response.data) history.push(`${username}/profile`);
+    
 } 
 
+export const fetchMyPosts = (userId) => async () => {
+    const response = await posts.get(`/myposts/${userId}`);
+    return response.data;
+};
+
 // ! Update post
-export const updatePost = (formValues,userId) => async () => {
-    console.log(' post updated');
+export const updatePost = (formValues, postId, username) => async () => {
+    const response = await posts.patch(
+        '/updatepost',
+        {...formValues, postId}
+    );
+    // if(response.data) history.push(`${username}/profile`);
 } 
 
 
@@ -67,7 +73,5 @@ export const deletePost = (formValues,userId) => async () => {
     console.log('post deleted');
 } 
 
-export const fetchMyPosts = (userId) => async () => {
-    const response = await posts.get(`/myposts/${userId}`);
-    return response.data;
-};
+
+

@@ -1,16 +1,23 @@
 import React, { useEffect } from 'react';
-import {Field, reduxForm} from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
+import { useHistory } from "react-router-dom";
 
 import { renderField } from './renderField';
 import { signIn } from '../../actions';
 
 const SignIn = (props) => {
+
+    let history = useHistory();
+
     const { handleSubmit, pristine, reset, submitting, signIn } = props;
 
     useEffect(()=>{reset()},[]);
 
-    const onSubmit = formValues => signIn(formValues);
+    const onSubmit = formValues => {
+        signIn(formValues)
+        .then(()=>history.push(`/${formValues.username}/profile`));
+    };
 
     return(
         <form onSubmit={handleSubmit(onSubmit)}>

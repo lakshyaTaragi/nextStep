@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; 
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -6,6 +7,7 @@ import _ from 'lodash';
 import { io } from 'socket.io-client';
 
 import { signOut, fetchMyPosts } from '../../actions';
+
 
 
 
@@ -70,8 +72,15 @@ const Profile = (props) => {
         return myPosts.map(post => {
             return (
                 <div className="item" key={post._id}>
-                    <div className="post-title">{post.title}</div>
-                    <div className="post-content">{post.content}</div>
+                    <Link to={{
+                    pathname: `/${props.currentUser.username}/updatepost`,
+                    formAction:"update",
+                    postValues: post
+                    }} >
+                        <div className="post-title">{post.title}</div>
+                    </Link>                    
+                        <div className="post-content">{post.content}</div>
+                        <hr/>
                 </div>
             );
         });
@@ -90,6 +99,20 @@ const Profile = (props) => {
             {createOnlineUsersList(onlineUsers)}
             {renderMyPostsList(posts)}
             </ul>
+            <br/>
+            <br/>
+            <br/>
+
+            
+            <button className="positive ui button" type="button">
+                <Link to={{
+                    pathname: `/${props.currentUser.username}/createpost`,
+                    formAction:"create"
+                }} >
+                    Create new post
+                </Link>
+            </button>
+
         </div>
     );
 };

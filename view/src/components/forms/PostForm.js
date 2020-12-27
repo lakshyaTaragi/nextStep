@@ -1,20 +1,41 @@
-import React from 'react';
-import PropTypes from 'prop-types'; 
+import React, { useEffect } from 'react'; 
 import { Field, reduxForm} from 'redux-form';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import { renderField } from './renderField';
 
 // ! based on formAction prop --> create for now
-import {createPost, updatePost, deletePost} from '../../actions';
+import {createPost, updatePost} from '../../actions';
 
 const Post = (props) => {
-    const { currentUser,
-        createPost, updatePost, deletePost, 
-        handleSubmit, pristine, submitting
-    } = props;
+    let history = useHistory();
 
-    const onSubmit = formValues => createPost(formValues,currentUser._id);
+    console.log(props);
+    const { currentUser,
+        createPost, updatePost, 
+        handleSubmit, submitting, pristine
+    } = props;
+    const {formAction} = props.location;
+
+    
+    useEffect(()=>{
+        const {initialize}=props;
+        if(formAction==="update"){
+            initialize(props.location.postValues);
+        }
+    },[]);
+    
+    const onSubmit = formValues => {
+        if(formAction==="create"){
+            createPost(formValues, currentUser._id, currentUser.username)
+            .then(()=>history.push(`/${currentUser.username}/profile`));
+        } else if(formAction==="update"){
+            updatePost(formValues, props.location.postValues._id, currentUser.username)
+            .then(()=>history.push(`/${currentUser.username}/profile`));
+        } 
+    };
+
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -31,7 +52,7 @@ const Post = (props) => {
                 label="Content"
             />
             <div>
-                <button type="submit" disabled={pristine || submitting}>
+                <button type="submit" disabled={pristine||submitting}>
                     Submit
                 </button>
             </div>
@@ -46,14 +67,12 @@ const validate = formValues => {
     return errors;
 };
 
-Post.propTypes = {
-    formAction: PropTypes.string.isRequired
-};
 
 const formWrapped = reduxForm({
     form: 'post',
     destroyOnUnmount: false,
     forceUnregisterOnUnmount: true,
+    // enableReinitialize : true,
     validate
 })(Post);
 
@@ -64,5 +83,4 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     createPost,
     updatePost,
-    deletePost
 })(formWrapped);

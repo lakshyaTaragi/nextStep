@@ -34,10 +34,9 @@ router.post('/createpost', (req, res) => {
                 myPosts:post
             }
         },
-        (err,result) => {
+        (err) => {
             if(err) throw err;
-            console.log(result);
-            res.send(result);
+            res.send(true);
         }
     );
 
@@ -49,6 +48,16 @@ router.get('/myposts/:userid', (req, res) => {
     Post.find({postedBy:objectId(userid)}, (err, myposts)=> {
         if(err) throw err;
         else res.send(myposts);
+    });
+});
+
+
+// ! update post details with postId
+router.patch('/updatepost', (req, res) => {
+    const {title, content, postId} = req.body;
+    Post.findByIdAndUpdate({_id:postId}, {title, content}, (err) => {
+        if(err)  throw err;
+        res.send(true);
     });
 });
 

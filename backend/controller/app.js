@@ -11,8 +11,8 @@ const app = express();
 
 const {userComesOnline, fetchOnlineUsers} = require('./chat/utils/users');
 
-// !Checkout app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+// !Checkout app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
@@ -27,7 +27,8 @@ const db = require('./config/keys').MongoURI;
 // Connect to Mongo
 mongoose.connect(db, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false 
 })
 .then(() => console.log('MongoDB connected...'))
 .catch(err => console.log(err));

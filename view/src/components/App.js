@@ -7,7 +7,7 @@ import Home from './screens/Home';
 import Profile from './screens/Profile';
 import Signup from './forms/signup-form/Signup';
 import SignIn from './forms/SignIn';
-import Post from './forms/Post';
+import Post from './forms/PostForm';
 
 import history from '../history';
 import { signOut } from '../actions';
@@ -17,6 +17,8 @@ import Chat from './screens/temporary-chat/Chat';
 
 
 const App = (props) => {
+
+
 
     //TODO: DELETE later
     console.log(JSON.parse(localStorage.getItem('currentUser')));
@@ -65,23 +67,11 @@ const App = (props) => {
                 
                 <Route path="/signin" exact component={SignIn} />
                 
-                <Route
-                    path="/:username/profile"
-                    exact
-                    render={(propers) => {
 
-                            const { match: { params } } = propers;
-                            if(props.currentUser) console.log(props.currentUser.username);
-                            if(props.currentUser && params.username===props.currentUser.username){
-                                return <Profile {...propers}/>;
-                            } else{
-                                return history.push('/signin');
-                            }                        
-                        }                        
-                    }
-                />
+                {authenticatedRoute(Profile,'profile')}
 
                 {authenticatedRoute(Post,'createpost')}
+                {authenticatedRoute(Post,'updatepost')}
 
                 <Route path="/allchats" exact component={AllChats} />
                 <Route path="/chat" exact component={Chat} />
