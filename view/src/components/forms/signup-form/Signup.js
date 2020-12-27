@@ -22,7 +22,6 @@ class Signup extends Component {
 
     render(){
 
-        // const {onSubmit} = this.props;
         const {page} = this.state;
         return (
             <div className="ui container placeholder segment">
@@ -30,14 +29,13 @@ class Signup extends Component {
                 Signup as {this.props.isMentor ? 'Mentor':'Mentee'}
                 </h4>
                 {page===1 && <FirstPage onSubmit={this.nextPage} />}
-                {page===2 && <SecondPage previousPage={this.previousPage} /*onSubmit={onSubmit}*/ isMentor={this.props.isMentor}/>}
+                {page===2 && <SecondPage previousPage={this.previousPage} isMentor={this.props.isMentor}/>}
             </div>
         );
     }
 };
 
 Signup.propTypes = {
-    // onSubmit: PropTypes.func.isRequired,
     isMentor: PropTypes.bool.isRequired
 };
 

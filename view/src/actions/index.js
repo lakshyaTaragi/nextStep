@@ -4,10 +4,9 @@ import posts from '../apis/posts';
 
 import { SIGN_IN, SIGN_OUT, LOAD_POST_VALUES} from './types';
 
-export const signUp = (formValues, isMentor) => async dispatch => {
-    const newUser = await auth.post('/signup', {...formValues, isMentor});
-    //! show a login button and the use signIn in it --> later
-    dispatch(signIn(newUser.data));
+
+export const signUp = (formValues, isMentor) => async () => {
+    await auth.post('/signup', {...formValues, isMentor});
 };
 
 export const signIn = (formValues) => async dispatch => {
@@ -18,7 +17,7 @@ export const signIn = (formValues) => async dispatch => {
 
 export const signOut = () => async dispatch => {
     localStorage.removeItem('currentUser');
-    const response = await auth.get('/signout');
+    await auth.get('/signout');
     dispatch({type: SIGN_OUT});
 };
 

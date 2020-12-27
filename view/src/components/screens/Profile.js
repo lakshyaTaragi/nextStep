@@ -80,20 +80,24 @@ const Profile = (props) => {
                     <div className="card-body">                    
                         <h5 className="card-title">{post.title}</h5>                   
                         <p className="card-text">{post.content}</p>
-                        
-                        <div className="btn-group" role="group" aria-label="Basic mixed styles example">
-                        <Link className="btn btn-warning" to={{
-                        pathname: `/${props.currentUser.username}/updatepost`,
-                        formAction:"update",
-                        postValues: post
-                        }} >
-                            Update post
-                        </Link>
-                        <button className="btn btn-danger" onClick={() => {
-                            props.deletePost(post._id);
-                            setPosts(_.remove(posts, (thisPost) => thisPost._id !== post._id ));
-                        }}> Delete post </button>
+
+                        {post.postedBy === props.currentUser._id ? 
+                            <div className="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <Link className="btn btn-warning" to={{
+                            pathname: `/${props.currentUser.username}/updatepost`,
+                            formAction:"update",
+                            postValues: post
+                            }} >
+                                Update post
+                            </Link>
+                            <button className="btn btn-danger" onClick={() => {
+                                props.deletePost(post._id);
+                                setPosts(_.remove(posts, (thisPost) => thisPost._id !== post._id ));
+                            }}> Delete post </button>
                         </div>
+                        : null}
+                        
+                        
                     </div>
                 </div>
             );
