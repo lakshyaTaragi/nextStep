@@ -61,6 +61,14 @@ router.patch('/updatepost', (req, res) => {
     });
 });
 
+// ! delete post with postId
+router.delete('/deletepost/:postid', (req) => {
+    const {postid} = req.params;
+    Post.findByIdAndDelete(postid, (err) => {
+        if(err) throw err;
+    });
+});
+
 
 // export router
 module.exports = router;

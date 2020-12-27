@@ -1,11 +1,9 @@
-import { Redirect } from 'react-router-dom';
 
 import auth from '../apis/auth';
 import users from '../apis/users';
 import posts from '../apis/posts';
 
 import { SIGN_IN, SIGN_OUT, CREATE_POST, UPDATE_POST, DELETE_POST } from './types';
-import history from '../history';
 
 export const signUp = (formValues, isMentor) => async dispatch => {
     const newUser = await auth.post('/signup', {...formValues, isMentor});
@@ -44,13 +42,11 @@ export const signOut = () => async dispatch => {
 //! POSTS RELATED ACTIONS
 
 // ! Create post
-export const createPost = (formValues, userId, username) => async () => {
-    const response = await posts.post(
+export const createPost = (formValues, userId) => async () => {
+    await posts.post(
         '/createpost',
         {...formValues, userId}
-    );
-    // if(response.data) history.push(`${username}/profile`);
-    
+    );    
 } 
 
 export const fetchMyPosts = (userId) => async () => {
@@ -59,18 +55,17 @@ export const fetchMyPosts = (userId) => async () => {
 };
 
 // ! Update post
-export const updatePost = (formValues, postId, username) => async () => {
-    const response = await posts.patch(
+export const updatePost = (formValues, postId) => async () => {
+    await posts.patch(
         '/updatepost',
         {...formValues, postId}
     );
-    // if(response.data) history.push(`${username}/profile`);
 } 
 
 
 // ! Delete post
-export const deletePost = (formValues,userId) => async () => {
-    console.log('post deleted');
+export const deletePost = (postId) => async () => {
+    await posts.delete(`/deletepost/${postId}`);
 } 
 
 

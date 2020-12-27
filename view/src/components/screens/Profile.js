@@ -6,8 +6,9 @@ import _ from 'lodash';
 // socket --> //! try to move to api folder later
 import { io } from 'socket.io-client';
 
-import { signOut, fetchMyPosts } from '../../actions';
+import { signOut, fetchMyPosts, deletePost } from '../../actions';
 
+import Post from '../Post';
 
 
 
@@ -50,6 +51,10 @@ const Profile = (props) => {
         props.signOut();
         socket.emit('signout');
     }
+
+    // const deletePostAndRemove = () => {
+
+    // }
     
 
     const createOnlineUsersList = (onlineUsers) => {
@@ -71,20 +76,31 @@ const Profile = (props) => {
     const renderMyPostsList = (myPosts) => {
         return myPosts.map(post => {
             return (
-                <div className="item" key={post._id}>
-                    <Link to={{
-                    pathname: `/${props.currentUser.username}/updatepost`,
-                    formAction:"update",
-                    postValues: post
-                    }} >
-                        <div className="post-title">{post.title}</div>
-                    </Link>                    
-                        <div className="post-content">{post.content}</div>
-                        <hr/>
+                <div className="card" style={{width: "18rem"}} key={post._id}>
+                    <div className="card-body">                    
+                        <h5 className="card-title">{post.title}</h5>                   
+                        <p className="card-text">{post.content}</p>
+                        
+                        <div className="btn-group" role="group" aria-label="Basic mixed styles example">
+                        <Link className="btn btn-warning" to={{
+                        pathname: `/${props.currentUser.username}/updatepost`,
+                        formAction:"update",
+                        postValues: post
+                        }} >
+                            Update post
+                        </Link>
+                        <button className="btn btn-danger" onClick={() => {
+                            props.deletePost(post._id);
+                            setPosts(_.remove(posts, (thisPost) => thisPost._id !== post._id ));
+                        }}> Delete post </button>
+                        </div>
+                    </div>
                 </div>
             );
         });
     };
+    
+
     
     return (
         <div>
@@ -113,6 +129,12 @@ const Profile = (props) => {
                 </Link>
             </button>
 
+            <br/>
+            <br/>
+
+            <br/>
+            <br/>
+
         </div>
     );
 };
@@ -126,5 +148,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps,{
     signOut,
-    fetchMyPosts
+    fetchMyPosts,
+    deletePost
 })(Profile);
