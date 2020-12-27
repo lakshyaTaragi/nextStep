@@ -6,24 +6,22 @@ import { useHistory } from 'react-router-dom';
 import { renderField } from './renderField';
 
 // ! based on formAction prop --> create for now
-import {createPost, updatePost} from '../../actions';
+import {createPost, updatePost, loadPostValues} from '../../actions';
 
 const Post = (props) => {
     let history = useHistory();
 
     console.log(props);
     const { currentUser,
-        createPost, updatePost, 
+        createPost, updatePost, loadPostValues, 
         handleSubmit, submitting, pristine
     } = props;
     const {formAction} = props.location;
 
     
     useEffect(()=>{
-        const {initialize}=props;
-        if(formAction==="update"){
-            initialize(props.location.postValues);
-        }
+        if(formAction==="update") loadPostValues(props.location.postValues);
+        else loadPostValues({title:'', content:''});
     },[]);
     
     const onSubmit = formValues => {
@@ -72,15 +70,19 @@ const formWrapped = reduxForm({
     form: 'post',
     destroyOnUnmount: false,
     forceUnregisterOnUnmount: true,
-    // enableReinitialize : true,
+    enableReinitialize : true,
     validate
 })(Post);
 
 const mapStateToProps = (state) => {
-    return {currentUser:state.auth.currentUser};
+    return {
+        currentUser:state.auth.currentUser,
+        initialValues: state.post.postValues
+    };
 };
 
 export default connect(mapStateToProps, {
     createPost,
     updatePost,
+    loadPostValues
 })(formWrapped);

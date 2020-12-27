@@ -1,9 +1,8 @@
-
 import auth from '../apis/auth';
 import users from '../apis/users';
 import posts from '../apis/posts';
 
-import { SIGN_IN, SIGN_OUT, CREATE_POST, UPDATE_POST, DELETE_POST } from './types';
+import { SIGN_IN, SIGN_OUT, LOAD_POST_VALUES} from './types';
 
 export const signUp = (formValues, isMentor) => async dispatch => {
     const newUser = await auth.post('/signup', {...formValues, isMentor});
@@ -53,6 +52,10 @@ export const fetchMyPosts = (userId) => async () => {
     const response = await posts.get(`/myposts/${userId}`);
     return response.data;
 };
+
+// ! Load post values
+export const loadPostValues = postValues => ({type: LOAD_POST_VALUES, payload: postValues});
+
 
 // ! Update post
 export const updatePost = (formValues, postId) => async () => {

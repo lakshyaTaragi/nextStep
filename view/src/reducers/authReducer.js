@@ -11,7 +11,7 @@ if(prevUser){
 }
 
 
-export default (state = INITIAL_STATE, action) => {
+const authReducer = (state = INITIAL_STATE, action) => {
     switch(action.type){
         case SIGN_IN:
             const {user,info} = action.payload;
@@ -25,3 +25,4 @@ export default (state = INITIAL_STATE, action) => {
     }
 };
 
+export default authReducer;
