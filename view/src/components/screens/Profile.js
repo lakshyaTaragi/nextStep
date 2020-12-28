@@ -21,11 +21,6 @@ const Profile = (props) => {
     
     
     useEffect(()=>{
-        
-        
-
-
-        // fetch personal posts
         fetchMyPosts(currentUser._id)
         .then(response => setPosts(response));
         

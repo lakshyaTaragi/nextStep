@@ -122,33 +122,9 @@ io.on('connection', socket => {
           };
         }
       );
-      
-      
 
-
-    // save in both users' dbs
-    // const newMessage = new Message({
-    //   sender: senderId,
-    //   receiver: receiverId,
-    //   time: time,
-    //   text: message
-    // });
-    // newMessage.save()
-    // .catch(err=>console.log(err));
-
-    // User.updateMany(
-    //   {'_id': { $in: [senderId, receiverId]}},
-    //   {
-    //     $push: {
-    //       chats: newMessage
-    //     }
-    //   },
-    //   (err) => {if(err) throw err;}
-    // );
-
-    // // emit to the receiver to make a chat reload;
-    // socket.to(receiverId).emit('messageReceived');
- 
+    // emit to the receiver to make a chat reload;
+    socket.to(receiverId).emit('messageReceived'); 
   });
 
 

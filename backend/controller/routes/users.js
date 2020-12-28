@@ -8,7 +8,7 @@ const router = express.Router();
 
 //Import mongo models
 const User = require('../../model/User');
-// const Message = require('../../model/Message');
+const ChatRoom = require('../../model/ChatRoom');
 const {Coaching, School, College} = require('../../model/Institute');
 
 // fetchByUsername
@@ -18,6 +18,16 @@ router.get('/:username', (req, res) => {
     res.send(foundUser);    
 });
 
+router.get('/chat/loadChat/:senderId/:receiverId', (req, res) => {
+    const {senderId, receiverId} = req.params;
+    ChatRoom.find(
+        {"members": {$in: [senderId, receiverId]}},
+        (err, result) => {
+            if(err) throw err;
+            res.send(result);
+        }
+    );
+});
 
 // sending-receiving chat message
 // router.get('/chat/:receiverId', (req, res) => {

@@ -19,10 +19,10 @@ import Chat from './screens/temporary-chat/Chat';
 
 const App = (props) => {
 
-    console.log(props.currentUser);
-
+    
     const { currentUser, socket, signOut, saveSocket} = props;
-
+    console.log(currentUser);
+    
     if(currentUser && !socket){
         
         const socketInst =  io('localhost:5000/'); //! ~localhost:5000/chat later

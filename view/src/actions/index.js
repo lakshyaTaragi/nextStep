@@ -90,13 +90,13 @@ export const sendChat = (formValues, senderId, receiverId, socket) => async () =
 };
 
 
-export const loadThisChat = (receiverId) => async dispatch => {
-    const response = await users.get(`/chat/${receiverId}`);
-    console.log(response.data);
+export const loadChat = (senderId, receiverId) => async () => {
+    const response = await users.get(`/chat/loadChat/${senderId}/${receiverId}`);
+    return response.data[0].messages;
 };
 
-export const ifChatted = (senderId, receiverId) => async dispatch => {
-    const response = await users.get(`/chat/${senderId}/${receiverId}`);
-};
+// export const ifChatted = (senderId, receiverId) => async dispatch => {
+//     const response = await users.get(`/chat/${senderId}/${receiverId}`);
+// };
 
 
