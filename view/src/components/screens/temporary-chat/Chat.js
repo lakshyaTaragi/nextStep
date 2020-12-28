@@ -1,6 +1,8 @@
 import React from 'react';
-import MessageForm from './MessageForm';
+import { connect } from 'react-redux';
 
+import MessageForm from './MessageForm';
+import { loadThisChat } from '../../../actions';
 
 const Chats = (props) => {
 
@@ -18,11 +20,16 @@ const Chats = (props) => {
         <li className="list-group-item list-group-item-primary">colour according to sender </li>
       </ul>
       </main>
+
       <MessageForm receiverId={receiver.id}/>
+
+      <button onClick={()=>props.loadThisChat(receiver.id)}> Load Chat </button>
+
     </div>
   );
 };
 
 
 
-export default Chats;
+
+export default connect(null, { loadThisChat })(Chats);

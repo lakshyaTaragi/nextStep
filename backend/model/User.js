@@ -56,9 +56,15 @@ const UserSchema = new Schema({
         ref: 'Post'
     }],
 
-    chats:[{    
-        type:ObjectId,
-        ref:'Message'          
+    chatRooms:[{
+        person: {
+            type: ObjectId,
+            ref: 'User'
+        },
+        chatRoom:{
+            type:ObjectId,
+            ref:'ChatRoom'
+        }    
     }]
 
 });

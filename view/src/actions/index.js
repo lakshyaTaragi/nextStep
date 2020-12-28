@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import moment from 'moment';
+
 import auth from '../apis/auth';
 import users from '../apis/users';
 import posts from '../apis/posts';
@@ -82,13 +84,19 @@ export const deletePost = (postId) => async () => {
 //! CHAT RELATED ACTIONS
 
 export const sendChat = (formValues, senderId, receiverId, socket) => async () => {
-//    both sides have to load their chat messages after this
-    console.log(formValues.message, senderId, receiverId);
-   socket.emit('newMessage', formValues.message, senderId, receiverId);
+    //    both sides have to load their chat messages after this
+    const time = moment().format('h:mm a');
+    socket.emit('newMessage', formValues.message, senderId, receiverId, time);
 };
 
 
-export const loadThisChat = () => {};
+export const loadThisChat = (receiverId) => async dispatch => {
+    const response = await users.get(`/chat/${receiverId}`);
+    console.log(response.data);
+};
 
+export const ifChatted = (senderId, receiverId) => async dispatch => {
+    const response = await users.get(`/chat/${senderId}/${receiverId}`);
+};
 
 

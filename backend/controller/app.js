@@ -68,6 +68,9 @@ const io = require('socket.io')(server, {
 
 // Import User model to save messages
 const User = require('../model/User');
+const ChatRoom = require('../model/ChatRoom');
+const { ObjectId } = mongoose.Types;
+
 
 //TODO : later we will use the friend request functionality 
 io.on('connection', socket => {
@@ -76,22 +79,76 @@ io.on('connection', socket => {
     socket.join(room);
   });
 
-  socket.on('newMessage', (message, senderId, receiverId) => {
+  socket.on('newMessage', (message, senderId, receiverId, time) => {
+
+    // search if the receiver exists in your chatrooms
+      User.exists(
+        {"_id":senderId ,"chatRooms.person": receiverId},
+        (err, result) =>{
+          if(err) throw err;
+          if(result) {
+            ChatRoom.updateOne(
+              {"members": {$in: [senderId, receiverId]}},
+              {$push: {messages: {
+                sender: senderId, receiver: receiverId, text: message, time: time
+              }}}, err=>{if(err) throw err; else console.log("message pushed to room")}
+            );
+          } else {
+            const newChatRoom = new ChatRoom({
+              members:[{_id: ObjectId(senderId)}, {_id: ObjectId(receiverId)}],
+              messages: [{sender: senderId, receiver: receiverId, text: message, time: time}]
+            });
+            // add this chat room to both your and receiver's chatroom lists
+            newChatRoom.save()
+            .then((createdRoom)=>{
+              console.log("new room created");
+              // in sender's
+              User.updateOne({_id:senderId},
+                { $push: {
+                    chatRooms: {
+                      person: receiverId,
+                      chatRoom: createdRoom._id
+                    }
+                }}, (err)=>{if(err) throw err; console.log("room pushed for sender");});
+              // in receiver's
+              User.updateOne({_id:receiverId},
+                { $push: {
+                    chatRooms: {
+                      person: senderId,
+                      chatRoom: createdRoom._id
+                    }
+                }}, (err)=>{if(err) throw err; console.log("room pushed for receiver");});
+            });
+          };
+        }
+      );
+      
+      
+
+
     // save in both users' dbs
-    // * save in sender's db
+    // const newMessage = new Message({
+    //   sender: senderId,
+    //   receiver: receiverId,
+    //   time: time,
+    //   text: message
+    // });
+    // newMessage.save()
+    // .catch(err=>console.log(err));
 
-
-    // User.updateOne(
-    //   {_id:senderId},
+    // User.updateMany(
+    //   {'_id': { $in: [senderId, receiverId]}},
     //   {
-
+    //     $push: {
+    //       chats: newMessage
+    //     }
     //   },
+    //   (err) => {if(err) throw err;}
     // );
 
-
-
-    // emit to the other person
-    //  
+    // // emit to the receiver to make a chat reload;
+    // socket.to(receiverId).emit('messageReceived');
+ 
   });
 
 

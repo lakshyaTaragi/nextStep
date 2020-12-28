@@ -10,9 +10,6 @@ import { signOut, fetchMyPosts, deletePost } from '../../actions';
 import Post from '../Post';
 
 
-
-
-
 const Profile = (props) => {
     
     
@@ -33,26 +30,18 @@ const Profile = (props) => {
         .then(response => setPosts(response));
         
         // ! hardcoded for now
-        setOnlineUsers([{
-            username:"a",
-            id:"5fe8b33e9a3273348c8ba6bc"
-        },
-        {
-            username:"b",
-            id:"5fe8b3519a3273348c8ba6c0"
-        },
-        {
-            username:"c",
-            id:"5fe8b35b9a3273348c8ba6c4"
-        },
-        {
-            username:"d",
-            id:"5fe8b3629a3273348c8ba6c8"
-        }]);
+        setOnlineUsers([
+            {
+                username:"a",
+                id:"5fea37682032710d4c5040f0"
+            },
+            {
+                username:"b",
+                id:"5fea37712032710d4c5040f4"
+            }
+        ]);
 
     },[]);
-    
-    
 
 
 
