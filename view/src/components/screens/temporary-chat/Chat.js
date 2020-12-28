@@ -8,7 +8,9 @@ const Chats = (props) => {
 
   const [chat, setChat] = useState([]);
   const receiver = JSON.parse(localStorage.getItem('receiver'));
-  const {currentUser, loadChat} = props;
+  const {currentUser, loadChat, socket} = props;
+
+  socket.on('loadChat', () => loadChat(currentUser._id, receiver.id).then(response => setChat(response)));
   
 
   useEffect(()=>loadChat(currentUser._id, receiver.id)
@@ -48,6 +50,9 @@ const Chats = (props) => {
   );
 };
 
-const mapStateToProps = state => ({currentUser: state.auth.currentUser});
+const mapStateToProps = state => ({
+  currentUser: state.auth.currentUser,
+  socket: state.auth.socket
+});
 
 export default connect(mapStateToProps, { loadChat })(Chats);

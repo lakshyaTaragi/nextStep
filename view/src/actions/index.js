@@ -84,7 +84,6 @@ export const deletePost = (postId) => async () => {
 //! CHAT RELATED ACTIONS
 
 export const sendChat = (formValues, senderId, receiverId, socket) => async () => {
-    //    both sides have to load their chat messages after this
     const time = moment().format('h:mm a');
     socket.emit('newMessage', formValues.message, senderId, receiverId, time);
 };

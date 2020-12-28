@@ -124,7 +124,7 @@ io.on('connection', socket => {
       );
 
     // emit to the receiver to make a chat reload;
-    socket.to(receiverId).emit('messageReceived'); 
+    io.to(receiverId).to(senderId).emit('loadChat'); 
   });
 
 
