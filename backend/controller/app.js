@@ -61,46 +61,41 @@ const server = app.listen(PORT, console.log(`Server running on port ${PORT}`));
 
 const io = require('socket.io')(server, {
   cors:{
-    // origin:'http://localhost:3000',
     origin:'*',
     methods: ["GET", "POST"]
   }
 });
 
+// Import User model to save messages
+const User = require('../model/User');
+
 //TODO : later we will use the friend request functionality 
-var clients = [];
-
-io.on('connection', (socket)=>{
-
-  socket.on('iAmOnline',(newUser)=>{
-    
-    socket.id = newUser._id;
-
-    // add to clients[] only when not already present
-    if(_.findIndex(clients,(client)=> client===newUser._id)===-1){
-      clients.push(newUser._id);
-    }
-    // console.log(clients);
-  });
-
-  socket.on('privateRoom',(room)=>{
+io.on('connection', socket => {
+  
+  socket.on('privateRoom', room => {
     socket.join(room);
-    socket.broadcast.emit('onlineUsers',clients);
-  });
-  
-  socket.on('signout',()=>{
-    _.remove(clients,client => client === socket.id);
-    socket.disconnect();
-    io.emit('onlineUsers',clients);
-    // console.log(clients);
   });
 
-  
-  socket.on('disconnect',()=>{
-    _.remove(clients,client => client === socket.id);
-    // console.log(clients);
-    io.emit('onlineUsers',clients);
+  socket.on('newMessage', (message, senderId, receiverId) => {
+    // save in both users' dbs
+    // * save in sender's db
+
+
+    // User.updateOne(
+    //   {_id:senderId},
+    //   {
+
+    //   },
+    // );
+
+
+
+    // emit to the other person
+    //  
   });
+
+
+  //   socket.broadcast.emit('onlineUsers',clients);
 
 
 

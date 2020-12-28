@@ -1,6 +1,7 @@
 import React from 'react';
 import { Router, Route}  from 'react-router-dom'
 import { connect } from 'react-redux';
+import { io } from 'socket.io-client';
 
 import Landing from './screens/Landing';
 import Home from './screens/Home';
@@ -10,7 +11,7 @@ import SignIn from './forms/SignIn';
 import Post from './forms/PostForm';
 
 import history from '../history';
-import { signOut } from '../actions';
+import { signOut, saveSocket } from '../actions';
 
 import AllChats from './screens/temporary-chat/AllChats';
 import Chat from './screens/temporary-chat/Chat';
@@ -18,10 +19,22 @@ import Chat from './screens/temporary-chat/Chat';
 
 const App = (props) => {
 
+    console.log(props.currentUser);
 
+    const { currentUser, socket, signOut, saveSocket} = props;
 
-    //TODO: DELETE later
-    console.log(JSON.parse(localStorage.getItem('currentUser')));
+    if(currentUser && !socket){
+        
+        const socketInst =  io('localhost:5000/'); //! ~localhost:5000/chat later
+        
+        var room = currentUser._id.toString();
+        socketInst.on('connect', () => socketInst.emit('privateRoom',room));
+        // ? socketInst.emit('iAmOnline', currentUser)
+        
+        saveSocket(socketInst);
+     
+    }
+    
 
     const authenticatedRoute = (Component,routeName) => {
         return(
@@ -30,7 +43,7 @@ const App = (props) => {
                 exact
                 render={(propers) => {
                         const { match: { params } } = propers;
-                        if(props.currentUser && params.username===props.currentUser.username){
+                        if(currentUser && params.username===currentUser.username){
                             return <Component {...propers}/>;
                         } else{
                             return history.push('/signin');
@@ -72,13 +85,13 @@ const App = (props) => {
 
                 {authenticatedRoute(Post,'createpost')}
                 {authenticatedRoute(Post,'updatepost')}
+                {authenticatedRoute(Chat,'chat')}
 
                 <Route path="/allchats" exact component={AllChats} />
-                <Route path="/chat" exact component={Chat} />
 
 
             </Router>
-            {props.currentUser?<button className="negative ui button" type="button" onClick={props.signOut}>
+            {currentUser?<button className="negative ui button" type="button" onClick={() => signOut(socket)}>
                 Logout
             </button>:null}
             
@@ -88,10 +101,14 @@ const App = (props) => {
 };
 
 const mapStateToProps = state => {
-    return {currentUser:state.auth.currentUser};
+    return {
+        currentUser:state.auth.currentUser,
+        socket: state.auth.socket
+    };
 };
 
 export default connect(mapStateToProps, {
-    signOut
+    signOut,
+    saveSocket
 })(App);
 

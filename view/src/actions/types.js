@@ -4,3 +4,7 @@ export const SIGN_OUT = 'SIGN_OUT';
 
 
 export const LOAD_POST_VALUES = 'LOAD_POST_VALUES';
+
+
+
+export const SAVE_SOCKET = 'SAVE_SOCKET';

@@ -1,8 +1,9 @@
+import _ from 'lodash';
 import auth from '../apis/auth';
 import users from '../apis/users';
 import posts from '../apis/posts';
 
-import { SIGN_IN, SIGN_OUT, LOAD_POST_VALUES} from './types';
+import { SIGN_IN, SIGN_OUT, LOAD_POST_VALUES, SAVE_SOCKET} from './types';
 
 
 export const signUp = (formValues, isMentor) => async () => {
@@ -11,15 +12,20 @@ export const signUp = (formValues, isMentor) => async () => {
 
 export const signIn = (formValues) => async dispatch => {
     const response = await auth.post('/signin', formValues); 
-    localStorage.setItem('currentUser',JSON.stringify(response.data)); 
-    dispatch({type:SIGN_IN, payload:response.data});    
+    const saveUser = {...response.data, user:_.omit(response.data.user,'chats','myPosts','password')};
+    localStorage.setItem('currentUser',JSON.stringify(saveUser)); 
+    dispatch({type:SIGN_IN, payload:saveUser});  
 };
 
-export const signOut = () => async dispatch => {
+export const signOut = (socket) => async dispatch => {
+    socket.disconnect();
     localStorage.removeItem('currentUser');
     await auth.get('/signout');
     dispatch({type: SIGN_OUT});
 };
+
+export const saveSocket = socket => async dispatch => dispatch({type: SAVE_SOCKET, payload: socket});
+
 
 
 // ! *****************************************************************************
@@ -69,6 +75,20 @@ export const updatePost = (formValues, postId) => async () => {
 export const deletePost = (postId) => async () => {
     await posts.delete(`/deletepost/${postId}`);
 } 
+
+
+
+//! *****************************************************************************
+//! CHAT RELATED ACTIONS
+
+export const sendChat = (formValues, senderId, receiverId, socket) => async () => {
+//    both sides have to load their chat messages after this
+    console.log(formValues.message, senderId, receiverId);
+   socket.emit('newMessage', formValues.message, senderId, receiverId);
+};
+
+
+export const loadThisChat = () => {};
 
 
 

@@ -16,5 +16,13 @@ router.get('/:username', (req, res) => {
 });
 
 
+// sending-receiving chat message
+
+
+
+
+
+
+
 //Export router
 module.exports = router;

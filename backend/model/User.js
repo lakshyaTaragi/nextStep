@@ -56,17 +56,10 @@ const UserSchema = new Schema({
         ref: 'Post'
     }],
 
-    chats:[{
-        person:{
-            type:ObjectId,
-            ref:'User'
-        },
-        messages:[{
-          type:ObjectId,
-          ref:'Message'  
-        }]
+    chats:[{    
+        type:ObjectId,
+        ref:'Message'          
     }]
-        
 
 });
 
