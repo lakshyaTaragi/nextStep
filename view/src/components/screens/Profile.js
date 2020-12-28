@@ -61,9 +61,8 @@ const Profile = (props) => {
             if(onlineUser.id!==currentUser._id){
                 return (
                     <div>
-                        <Link className="btn btn-success" key={onlineUser.id} to={{
+                        <Link className="btn btn-success" key={onlineUser.id} onClick={() => localStorage.setItem('receiver',JSON.stringify(onlineUser))} to={{
                         pathname: `/${currentUser.username}/chat`,
-                        receiver: onlineUser
                         }} >
                             {onlineUser.username}
                         </Link>

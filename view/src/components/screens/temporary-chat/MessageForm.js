@@ -6,9 +6,13 @@ import { sendChat } from '../../../actions';
 
 const MessageForm = (props) => {
 
-    const { handleSubmit, pristine, submitting, sendChat, receiverId, currentUser, socket } = props;
+    const { handleSubmit, pristine, reset, submitting, sendChat, receiverId, currentUser, socket } = props;
 
-    const onSubmit = formValues => sendChat(formValues, currentUser._id, receiverId, socket);
+
+    const onSubmit = formValues => {
+        sendChat(formValues, currentUser._id, receiverId, socket)
+        .then(() => reset());
+    };
 
     return(
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -30,7 +34,7 @@ const MessageForm = (props) => {
 
 const validate = formValues => {
     const errors = {};
-    if(!formValues.message){errors.message = ""}
+    if(!formValues.message){errors.message = ''}
     return errors;
 };
 

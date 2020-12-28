@@ -3,10 +3,8 @@ import MessageForm from './MessageForm';
 
 
 const Chats = (props) => {
-  // console.log(props.location);
 
-  // const onChatSend = (e) => {};
-  const {receiver} = props.location;
+  const receiver = JSON.parse(localStorage.getItem('receiver'));
 
   return (
     <div className="chat-container">

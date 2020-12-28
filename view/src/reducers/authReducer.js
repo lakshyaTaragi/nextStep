@@ -7,8 +7,7 @@ if(prevUser){
     INITIAL_STATE.isSignedIn = true;
     INITIAL_STATE.currentUser = prevUser.user;
     INITIAL_STATE.message = prevUser.info.message;
-    INITIAL_STATE.socket = prevUser.socket;
-    
+    INITIAL_STATE.socket = prevUser.socket;    
 }
 
 
