@@ -46,10 +46,8 @@ const SignIn = (props) => {
 
 const validate = formValues => {
     const errors = {};
-
     if(!formValues.username){errors.username = 'Required'}
     if(!formValues.password){errors.password = 'Required'}
-
     return errors;
 };
 

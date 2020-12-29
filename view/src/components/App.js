@@ -2,6 +2,7 @@ import React from 'react';
 import { Router, Route}  from 'react-router-dom'
 import { connect } from 'react-redux';
 import { io } from 'socket.io-client';
+import _ from 'lodash';
 
 import Landing from './screens/Landing';
 import Home from './screens/Home';
@@ -26,8 +27,8 @@ const App = (props) => {
     if(currentUser && !socket){
         
         const socketInst =  io('localhost:5000/'); //! ~localhost:5000/chat later
-        
-        var room = currentUser._id.toString();
+        var room;
+        if(currentUser._id) room = currentUser._id.toString();
         socketInst.on('connect', () => socketInst.emit('privateRoom',room));
         // ? socketInst.emit('iAmOnline', currentUser)
         
@@ -91,7 +92,7 @@ const App = (props) => {
 
 
             </Router>
-            {currentUser?<button className="negative ui button" type="button" onClick={() => signOut(socket)}>
+            {!_.isEmpty(currentUser)?<button className="negative ui button" type="button" onClick={() => signOut(socket)}>
                 Logout
             </button>:null}
             

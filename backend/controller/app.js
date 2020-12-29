@@ -80,20 +80,27 @@ io.on('connection', socket => {
   });
 
   socket.on('newMessage', (message, senderId, receiverId, time) => {
-
-    // search if the receiver exists in your chatrooms
       User.exists(
         {"_id":senderId ,"chatRooms.person": receiverId},
         (err, result) =>{
+
           if(err) throw err;
+
           if(result) {
-            ChatRoom.updateOne(
-              {"members": {$in: [senderId, receiverId]}},
+
+            ChatRoom.findOneAndUpdate(
+              { members: { $all: [senderId, receiverId] } },
               {$push: {messages: {
                 sender: senderId, receiver: receiverId, text: message, time: time
-              }}}, err=>{if(err) throw err; else console.log("message pushed to room")}
-            );
+              }}}, err => {
+                if(err) throw err;
+                else console.log("message pushed to room");
+                io.to(receiverId).to(senderId).emit('loadChat');
+              });
+              
+
           } else {
+
             const newChatRoom = new ChatRoom({
               members:[{_id: ObjectId(senderId)}, {_id: ObjectId(receiverId)}],
               messages: [{sender: senderId, receiver: receiverId, text: message, time: time}]
@@ -109,7 +116,10 @@ io.on('connection', socket => {
                       person: receiverId,
                       chatRoom: createdRoom._id
                     }
-                }}, (err)=>{if(err) throw err; console.log("room pushed for sender");});
+                }}, err => {
+                  if(err) throw err; 
+                  console.log("room pushed for sender");
+                });
               // in receiver's
               User.updateOne({_id:receiverId},
                 { $push: {
@@ -117,19 +127,15 @@ io.on('connection', socket => {
                       person: senderId,
                       chatRoom: createdRoom._id
                     }
-                }}, (err)=>{if(err) throw err; console.log("room pushed for receiver");});
+                }}, err => {
+                  if(err) throw err; 
+                  console.log("room pushed for receiver");
+                  io.to(receiverId).to(senderId).emit('loadChat');
+                });
             });
           };
         }
-      );
-
-    // emit to the receiver to make a chat reload;
-    io.to(receiverId).to(senderId).emit('loadChat'); 
+        );
+             
   });
-
-
-  //   socket.broadcast.emit('onlineUsers',clients);
-
-
-
 });

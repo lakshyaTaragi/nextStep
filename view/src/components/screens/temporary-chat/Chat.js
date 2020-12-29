@@ -10,17 +10,19 @@ const Chats = (props) => {
   const receiver = JSON.parse(localStorage.getItem('receiver'));
   const {currentUser, loadChat, socket} = props;
 
-  socket.on('loadChat', () => loadChat(currentUser._id, receiver.id).then(response => {
-    if(response.lenth>0) setChat(response[0].messages);
-  }));
+  const loadChatAndSet = () => {
+    loadChat(currentUser._id, receiver.id)
+    .then(response => {
+      if(response.length > 0){
+        setChat(response[0].messages);
+      } 
+    });
+  }
   
-
-  useEffect(()=>loadChat(currentUser._id, receiver.id)
-  .then(response => {
-    if(response.length > 0){
-      setChat(response[0].messages);
-    };    
-  }),[]);
+  useEffect(() => {
+    loadChatAndSet();    
+    socket.on('loadChat', () => loadChatAndSet());
+  }, []);
 
   const renderChat = (chat) => {
     if(chat.length>0){
@@ -42,7 +44,10 @@ const Chats = (props) => {
       });
     } else {
       return (
-        <div className="list-group-item list-group-item-danger">No messages available. Start talking with {receiver.username}</div>
+        // TODO: HAVE A LOADER LATER
+        <div className="list-group-item list-group-item-danger">
+          No messages available. Start talking with {receiver.username}
+        </div>
       );
     }
   }
