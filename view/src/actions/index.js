@@ -91,7 +91,7 @@ export const sendChat = (formValues, senderId, receiverId, socket) => async () =
 
 export const loadChat = (senderId, receiverId) => async () => {
     const response = await users.get(`/chat/loadChat/${senderId}/${receiverId}`);
-    return response.data[0].messages;
+    return response.data; 
 };
 
 // export const ifChatted = (senderId, receiverId) => async dispatch => {

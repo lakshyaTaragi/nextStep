@@ -33,6 +33,10 @@ const Profile = (props) => {
             {
                 username:"b",
                 id:"5fea37712032710d4c5040f4"
+            },
+            {
+                username:"c",
+                id:"5feaffa316dcd7297865edec"
             }
         ]);
 

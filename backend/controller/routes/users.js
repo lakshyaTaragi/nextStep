@@ -21,7 +21,7 @@ router.get('/:username', (req, res) => {
 router.get('/chat/loadChat/:senderId/:receiverId', (req, res) => {
     const {senderId, receiverId} = req.params;
     ChatRoom.find(
-        {"members": {$in: [senderId, receiverId]}},
+        { members: { $all: [senderId, receiverId] } },
         (err, result) => {
             if(err) throw err;
             res.send(result);

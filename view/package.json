@@ -9,6 +9,7 @@
     "axios": "^0.21.0",
     "bootstrap": "^4.5.3",
     "bootstrap-icons": "^1.2.2",
+    "emoji-picker-react": "^3.2.4",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",
