@@ -11,4 +11,10 @@ export const renderField = ({ input, label, type, meta: { touched, error } }) =>
   </div>
 );
 
+export const textInput = ({ input, type, placeholder }) => (
+  <div>
+    <input {...input} placeholder={placeholder} type={type} autoComplete="off" />      
+  </div>
+);
+
 

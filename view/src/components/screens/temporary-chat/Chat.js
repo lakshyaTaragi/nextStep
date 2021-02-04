@@ -28,33 +28,36 @@ const Chats = (props) => {
     if(chat.length>0){
       return chat.map(message => {
         let areWe = message.sender===currentUser._id;
-        let classes = `list-group-item list-group-item-${areWe ?"info":"dark"}`;
+        let classes = `list-group-item list-group-item-${areWe ?"info message-right":"light message-left"} rounded-pill d-inline-flex shadow-sm p-3 mb-2 rounded`;
         let name = areWe?currentUser.username:receiver.username;
         return (
-          <div key={message._id}>
-            <hr/>
-            <li className={classes}>
-              <div>{name}</div>
-              <div>{message.time}</div>
-              <div>{message.text}</div>
+          <div>
+            <li className={classes} key={message._id}>
+              <div><b>{name}  {message.time}</b> <br/>{message.text}</div>
             </li>
-            <hr/>
-          </div>          
+          </div>       
         );
       });
-    } else {
+    } else if(chat.length=0) {
       return (
         // TODO: HAVE A LOADER LATER
         <div className="list-group-item list-group-item-danger">
           No messages available. Start talking with {receiver.username}
         </div>
       );
+    } else {
+      return (
+        <div class="ui segment">
+          <div class="ui active centered inline loader"></div>
+          <p></p>
+        </div>
+      );
     }
   }
 
   return (
-    <div className="chat-container">
-      <header className="chat-header">
+    <div className="ui raised very padded text container segment">
+      <header className="ui header">
         <h1>Chat with {receiver.username}</h1>
       </header>
       <main className="chat-main">
@@ -73,3 +76,4 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, { loadChat })(Chats);
+

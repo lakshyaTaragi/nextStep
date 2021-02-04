@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { renderField } from '../../forms/renderField';
+import { textInput } from '../../forms/renderField';
 import { sendChat } from '../../../actions';
 
 const MessageForm = (props) => {
@@ -19,8 +19,8 @@ const MessageForm = (props) => {
             <Field
                 name="message"
                 type="text"
-                component={renderField}
-                label="Enter Message"
+                component={textInput}
+                placeholder="Message..."
             />
             <div>
                 <button className="btn btn-primary" type="submit" disabled={pristine || submitting}>
@@ -32,15 +32,8 @@ const MessageForm = (props) => {
 
 }; 
 
-const validate = formValues => {
-    const errors = {};
-    if(!formValues.message){errors.message = ''}
-    return errors;
-};
-
 const formWrapped = reduxForm({
-    form: 'message',
-    validate
+    form: 'message'
 })(MessageForm);
 
 const mapStateToProps = (state) => {

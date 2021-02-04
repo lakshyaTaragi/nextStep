@@ -29,6 +29,10 @@ const CommentSchema = new Schema({
         ref: 'User',
         required: true
     },
+    personsName:{
+        type: String,
+        required: true
+    },
     content: {
         type: String,
         required: true

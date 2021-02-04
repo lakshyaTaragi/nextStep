@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 //! try to move to api folder later
 
-import { signOut, fetchMyPosts, deletePost } from '../../actions';
+import { signOut, fetchMyPosts, deletePost, fetchPostById } from '../../actions';
 
 import Post from '../Post';
 
@@ -17,7 +17,7 @@ const Profile = (props) => {
 
     const [posts, setPosts] = useState([]); 
     
-    const { currentUser, socket, fetchMyPosts, signOut, deletePost, message } = props;
+    const { currentUser, socket, fetchMyPosts, fetchPostById, signOut, deletePost, message } = props;
     
     
     useEffect(()=>{
@@ -62,34 +62,11 @@ const Profile = (props) => {
 
     const renderMyPostsList = (myPosts) => {
         return myPosts.map(post => {
-            return (
-                <div className="card" style={{width: "18rem"}} key={post._id}>
-                    <div className="card-body">                    
-                        <h5 className="card-title">{post.title}</h5>                   
-                        <p className="card-text">{post.content}</p>
-
-                        {post.postedBy === currentUser._id ? 
-                            <div className="btn-group" role="group" aria-label="Basic mixed styles example">
-                            <Link className="btn btn-warning" to={{
-                            pathname: `/${currentUser.username}/updatepost`,
-                            formAction:"update",
-                            postValues: post
-                            }} >
-                                Update post
-                            </Link>
-                            <button className="btn btn-danger" onClick={() => {
-                                deletePost(post._id);
-                                setPosts(_.remove(posts, (thisPost) => thisPost._id !== post._id ));
-                            }}> Delete post </button>
-                        </div>
-                        : null}
-                        
-                        
-                    </div>
-                </div>
-            );
+            return <Post postId={post._id} setPosts={setPosts} posts={posts} />;
         });
     };
+
+    // ! deal about page refreshing on delete post
     
 
     
@@ -141,5 +118,6 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps,{
     signOut,
     fetchMyPosts,
+    fetchPostById,
     deletePost
 })(Profile);

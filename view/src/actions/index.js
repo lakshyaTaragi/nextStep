@@ -60,6 +60,12 @@ export const fetchMyPosts = (userId) => async () => {
     return response.data;
 };
 
+export const fetchPostById = (postId) => async () => {
+    const response = await posts.get(`fetchpost/${postId}`);
+    console.log(response.data);
+    return response.data;
+};
+
 // ! Load post values
 export const loadPostValues = postValues => ({type: LOAD_POST_VALUES, payload: postValues});
 
@@ -94,8 +100,36 @@ export const loadChat = (senderId, receiverId) => async () => {
     return response.data; 
 };
 
-// export const ifChatted = (senderId, receiverId) => async dispatch => {
-//     const response = await users.get(`/chat/${senderId}/${receiverId}`);
-// };
+
+//! *****************************************************************************
+//! COMMENT RELATED ACTIONS
+// ! Create comment
+export const createComment = (userId, username, formValues, postId ) => async () => {
+    console.log('createComment called');
+    await posts.post(
+        '/createComment',
+        {userId, username, ...formValues, postId} 
+    );    
+}
+
+// !fetch comments for a post
+export const fetchComments = (comments_ids) => async () => {
+    const response = await posts.post('/getComments', comments_ids);
+    return response.data;
+}
+
+// // ! Update comment
+// export const updatePost = (formValues, postId) => async () => {
+//     await posts.patch(
+//         '/updatepost',
+//         {...formValues, postId}
+//     );
+// } 
+
+
+// // ! Delete comment
+// export const deletePost = (postId) => async () => {
+//     await posts.delete(`/deletepost/${postId}`);
+// } 
 
 
