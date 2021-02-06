@@ -51,6 +51,11 @@ const UserSchema = new Schema({
         ref: 'Institute'
     },
 
+    profilePicture:{
+        type: ObjectId,
+        ref: 'Image',
+    },
+
     myPosts: [{
         type: ObjectId,
         ref: 'Post'

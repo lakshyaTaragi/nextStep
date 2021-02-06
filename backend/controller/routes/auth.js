@@ -63,7 +63,7 @@ router.post('/signup', (req, res) => {
             .catch(err => console.log(err));
         });
     });
-    res.send(newUser); 
+    res.send(true); 
 });
 
 

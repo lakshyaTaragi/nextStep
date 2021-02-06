@@ -9,7 +9,7 @@ const _ = require('lodash');
 
 const app = express();
 
-const {userComesOnline, fetchOnlineUsers} = require('./chat/utils/users');
+// const {userComesOnline, fetchOnlineUsers} = require('./chat/utils/users');
 
 app.use(cors());
 // !Checkout app.use(express.urlencoded({ extended: false }));
@@ -54,7 +54,8 @@ const PORT = process.env.PORT || 5000;
 // Routes //! later try one for chat
 app.use('/auth', require('./routes/auth'));
 app.use('/users', require('./routes/users'));
-app.use('/posts', require('./routes/posts'));
+app.use('/posts', require('./routes/posts')); 
+app.use('/image', require('./routes/image')); 
 
 // socket.io inclusion
 const server = app.listen(PORT, console.log(`Server running on port ${PORT}`));

@@ -17,4 +17,9 @@ export const textInput = ({ input, type, placeholder }) => (
   </div>
 );
 
-
+// export const fileUploadInput = () => (
+//   <form encType="multipart/form-data">
+//     <input type="file" accept=".jpg, .png, .jpeg" change="fileEvent($event)" className="inputfile" />  
+//   </form>
+    
+// );

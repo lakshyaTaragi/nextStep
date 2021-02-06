@@ -6,7 +6,8 @@ import { useHistory } from "react-router-dom";
 
 import validate from './validate';
 import { renderField } from '../renderField';
-import { signUp, signIn } from '../../../actions';
+import { signUp, signIn, fileUpload } from '../../../actions';
+import image from '../../../apis/image';
 
 
 
@@ -14,18 +15,42 @@ const SecondPage = (props) => {
 
     let history = useHistory();
     const [registeredUser, setRegisteredUser] = useState({});
+    const [dp, setDp] = useState(null);
+    const [uploadDone, setUploadDone] = useState(false);
     
-    const { handleSubmit, pristine, previousPage, submitting, signUp, signIn, isMentor, currentUser } = props;
+    const { handleSubmit, pristine, previousPage, submitting, signUp, signIn, isMentor, currentUser, fileUpload } = props;
+    
     const onSubmit = (formValues) => {
         signUp(formValues, isMentor);
         setRegisteredUser(formValues);
     };
 
+    const onFileChoice = e => {
+        console.log(e.target.files[0])
+        setDp(e.target.files[0]);
+    }
+
+    const onImageUpload = e => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('image', dp);
+        formData.append('username', registeredUser.username);
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        };
+        image.post('/create', formData, config)
+        .then(res => {
+            if(res) setUploadDone(true); 
+        });
+    }
+
        
         return (
             <div>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Field 
+                    {/* <Field 
                         name="firstName"
                         type="text"
                         component={renderField}
@@ -60,20 +85,23 @@ const SecondPage = (props) => {
                         type="text"
                         component={renderField}
                         label="Coaching"
-                    />
+                    /> */}
                     <Field 
                         name="coachingCity"
                         type="text"
                         component={renderField}
                         label="Coaching-city"
                     />
-                    {isMentor && <Field 
+                    
+                    {/* {isMentor && <Field 
                         name="college"
                         type="text"
                         component={renderField}
                         label="College"
-                    />}
+                    />} */}
                     
+                    {/* <Field name="profilePicture" component={fileUploadInput} /> */}
+
                 <div>
                     <button type="button" className="previous" onClick={previousPage}>
                         Previous
@@ -84,9 +112,27 @@ const SecondPage = (props) => {
                 </div>
                 </form>
 
-                {registeredUser.username && <div className="btn btn-primary" onClick={()=>{
-                    signIn(registeredUser).then(()=>history.push(`/${registeredUser.username}/profile`));
-                }}>Login as {registeredUser.username}</div>}
+                {registeredUser.username && 
+                    <div>
+                        <div className="btn btn-primary" 
+                            onClick={() => {
+                                signIn(registeredUser).then(()=>history.push(`/${registeredUser.username}/profile`));
+                        }}>
+                            Login as {registeredUser.username}
+                        </div>
+                        <br/>
+                        <br/>
+                        <form onSubmit={ onImageUpload } >
+                            <input name="myImage" onChange={onFileChoice} type="file" accept=".jpg, .png, .jpeg" change="fileEvent($event)" className="inputfile" />
+                            <button type="submit" className={`ui ${dp ? '':'disabled'} button`} >
+                                <i className="user icon"></i>
+                                Set profile picture
+                            </button>
+                        </form>
+                        <br/>
+                        {uploadDone ? <div>Uploaded Successfully</div> : null}
+                    </div>
+                }
 
             </div>
         );
@@ -101,5 +147,6 @@ const formWrapped = reduxForm({
 
 export default connect(null,{
     signUp,
-    signIn
+    signIn,
+    fileUpload
 })(formWrapped);

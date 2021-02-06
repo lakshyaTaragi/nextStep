@@ -4,6 +4,7 @@ import moment from 'moment';
 import auth from '../apis/auth';
 import users from '../apis/users';
 import posts from '../apis/posts';
+// import image from '../apis/image';
 
 import { SIGN_IN, SIGN_OUT, LOAD_POST_VALUES, SAVE_SOCKET} from './types';
 
@@ -11,6 +12,12 @@ import { SIGN_IN, SIGN_OUT, LOAD_POST_VALUES, SAVE_SOCKET} from './types';
 export const signUp = (formValues, isMentor) => async () => {
     await auth.post('/signup', {...formValues, isMentor});
 };
+
+// export const fileUpload = (file) => async () => {
+//     const profilePicData = new FormData();
+//     const response = await image.post('/create', file);
+//     return response.data();
+// }
 
 export const signIn = (formValues) => async dispatch => {
     const response = await auth.post('/signin', formValues); 

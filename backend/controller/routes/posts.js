@@ -55,7 +55,7 @@ router.get('/myposts/:userid', (req, res) => {
 // ! for fetching a post by id
 router.get('/fetchpost/:postId', (req, res) => {
     const {postId} = req.params;
-    Post.find({_id: postId}, (err, foundPost)=> {
+    Post.find({_id: postId}, (err, foundPost) => {
         if(err) throw err;
         else res.send(foundPost);
     });
