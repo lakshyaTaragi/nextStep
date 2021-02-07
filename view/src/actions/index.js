@@ -7,6 +7,7 @@ import posts from '../apis/posts';
 // import image from '../apis/image';
 
 import { SIGN_IN, SIGN_OUT, LOAD_POST_VALUES, SAVE_SOCKET} from './types';
+import image from '../apis/image';
 
 
 export const signUp = (formValues, isMentor) => async () => {
@@ -39,7 +40,16 @@ export const saveSocket = socket => async dispatch => dispatch({type: SAVE_SOCKE
 
 // ! *****************************************************************************
 
+export const populateInfo = (username) => async () => {
+    const response = await users.get(`/populate/${username}`);
+    console.log(response.data);
+    return response.data;
+}
 
+export const getImage = id => async () => {
+    const response = await image.get(`/show/${id}`);
+    return response.data;
+}
 
 // export const fetchByUsername = (username) => async dispatch => {
 //     const foundUser = await users.get(`/${username}`);

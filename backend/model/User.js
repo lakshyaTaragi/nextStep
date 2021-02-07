@@ -37,18 +37,18 @@ const UserSchema = new Schema({
 
     school:{
         type: ObjectId,
-        ref: 'Institute',
+        ref: 'School',
         //required: true
     },
 
     coaching:{
         type: ObjectId,
-        ref: 'Institute'
+        ref: 'Coaching'
     },
 
     college:{
         type: ObjectId,
-        ref: 'Institute'
+        ref: 'College'
     },
 
     profilePicture:{

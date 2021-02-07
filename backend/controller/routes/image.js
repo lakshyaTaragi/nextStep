@@ -18,8 +18,7 @@ const User = require('../../model/User');
 router.get('/show/:id', (req, res, next) => {
     Image.findById(req.params.id, (err, image) => { //!findById --> associated with profile picture   
         if(err) return next(err);
-        res.contentType(image.img.contentType);
-        res.send(image.img.data);
+        res.send(image.img.data.data);
     });
 });
 

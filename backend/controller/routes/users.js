@@ -11,11 +11,19 @@ const User = require('../../model/User');
 const ChatRoom = require('../../model/ChatRoom');
 const {Coaching, School, College} = require('../../model/Institute');
 
-// fetchByUsername
-router.get('/:username', (req, res) => {
+// populate
+router.get('/populate/:username', (req, res) => {
     const {username} = req.params;
-    const foundUser = User.findOne({username:username});
-    res.send(foundUser);    
+    User.findOne({username})
+    .populate('coaching')
+    .populate('school')
+    .populate({path: 'college', isMentor:true})
+    .populate({path: 'profilePicture', match: {profilePicture: {$ne:''}}})
+    .exec((err, foundUser) => {
+        if(err) console.log(err);
+        console.log(foundUser);
+        res.send(foundUser);
+    });
 });
 
 router.get('/chat/loadChat/:senderId/:receiverId', (req, res) => {
@@ -28,6 +36,7 @@ router.get('/chat/loadChat/:senderId/:receiverId', (req, res) => {
         }
     );
 });
+
 
 // sending-receiving chat message
 // router.get('/chat/:receiverId', (req, res) => {
