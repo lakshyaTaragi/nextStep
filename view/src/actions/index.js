@@ -51,6 +51,14 @@ export const getImage = id => async () => {
     return response.data;
 }
 
+export const renderImageFromDB = (rec_image,classes) => {
+    const dp = rec_image.img.data.data;
+    let TYPED_ARRAY = new Uint8Array(dp);
+    const STRING_CHAR = String.fromCharCode.apply(null, TYPED_ARRAY);
+    let base64String = btoa(STRING_CHAR);
+    return <img className={`ui small ${classes} image`} src={`data:image/png;base64,${base64String}`}/>
+}
+
 // export const fetchByUsername = (username) => async dispatch => {
 //     const foundUser = await users.get(`/${username}`);
 //     return foundUser;

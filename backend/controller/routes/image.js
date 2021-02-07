@@ -18,7 +18,7 @@ const User = require('../../model/User');
 router.get('/show/:id', (req, res, next) => {
     Image.findById(req.params.id, (err, image) => { //!findById --> associated with profile picture   
         if(err) return next(err);
-        res.send(image.img.data.data);
+        res.send(image);
     });
 });
 
@@ -46,7 +46,7 @@ router.post('/create', upload.single('image'), (req, res, next) => {
             {profilePicture: objectId(savedImage._id)},
             err => { if(err) throw err;}
         );
-        res.send(true);
+        res.send(savedImage);
     });
 });
 

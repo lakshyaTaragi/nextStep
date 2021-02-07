@@ -7,7 +7,7 @@ import defaultpic from './defaultpic.jpg'
 
 //! try to move to api folder later
 
-import { signOut, fetchMyPosts, deletePost, fetchPostById, populateInfo, getImage } from '../../actions';
+import { signOut, fetchMyPosts, deletePost, fetchPostById, populateInfo, getImage, renderImageFromDB } from '../../actions';
 
 import Post from '../Post';
 
@@ -19,9 +19,9 @@ const Profile = (props) => {
 
     const [posts, setPosts] = useState([]); 
     const [extraInfo, setExtraInfo] = useState({});
-    const [imageData, setImageData] = useState('');
+
     
-    const { cu, socket, fetchMyPosts, fetchPostById, signOut, deletePost, message, populateInfo, getImage } = props;
+    const { cu, socket, fetchMyPosts, fetchPostById, signOut, deletePost, message, populateInfo, getImage, renderImageFromDB } = props;
     
     
     useEffect(()=>{
@@ -74,13 +74,6 @@ const Profile = (props) => {
         });
     };
 
-    const renderImageFromDB = () => {
-        const dp = extraInfo.profilePicture.img.data.data;
-        let TYPED_ARRAY = new Uint8Array(dp);
-        const STRING_CHAR = String.fromCharCode.apply(null, TYPED_ARRAY);
-        let base64String = btoa(STRING_CHAR);
-        return <img className="ui small circular image" src={`data:image/png;base64,${base64String}`}/>
-    }
 
     // ! deal about page refreshing on delete post
     const renderProfileInfo = extraInfo => {
@@ -90,7 +83,7 @@ const Profile = (props) => {
             return (
                 <div className="ui items">
                     <div className="item">
-                        {extraInfo.profilePicture ? renderImageFromDB():<img className="ui small circular image" src={defaultpic} />}
+                        {extraInfo.profilePicture ? renderImageFromDB(extraInfo.profilePicture,"circular"):<img className="ui small circular image" src={defaultpic} />}
                         
                         
                        
@@ -184,5 +177,6 @@ export default connect(mapStateToProps,{
     fetchPostById,
     deletePost,
     populateInfo,
-    getImage
+    getImage,
+    renderImageFromDB
 })(Profile);

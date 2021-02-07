@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 
 import validate from './validate';
 import { renderField } from '../renderField';
-import { signUp, signIn } from '../../../actions';
+import { signUp, signIn, renderImageFromDB } from '../../../actions';
 import image from '../../../apis/image';
 
 
@@ -17,8 +17,8 @@ const SecondPage = (props) => {
     const [registeredUser, setRegisteredUser] = useState({});
     const [dp, setDp] = useState(null);
     const [uploadDone, setUploadDone] = useState(false);
-    
-    const { handleSubmit, pristine, previousPage, submitting, signUp, signIn, isMentor, currentUser } = props;
+    const [imData, setImData]=useState(false);
+    const { handleSubmit, pristine, previousPage, submitting, signUp, signIn, isMentor, currentUser, renderImageFromDB } = props;
     
     const onSubmit = (formValues) => {
         signUp(formValues, isMentor);
@@ -42,7 +42,11 @@ const SecondPage = (props) => {
         };
         image.post('/create', formData, config)
         .then(res => {
-            if(res) setUploadDone(true); 
+            if(res.data) {
+                setUploadDone(true);
+                console.log(res.data); 
+                setImData(res.data);
+            }
         });
     }
 
@@ -129,7 +133,12 @@ const SecondPage = (props) => {
                             </button>
                         </form>
                         <br/>
-                        {uploadDone ? <div>Uploaded Successfully</div> : null}
+                        {uploadDone && 
+                            <div>
+                                Uploaded Successfully
+                                {imData?renderImageFromDB(imData, "rounded"):null}
+                            </div>
+                        }
                     </div>
                 }
 
@@ -146,5 +155,6 @@ const formWrapped = reduxForm({
 
 export default connect(null,{
     signUp,
-    signIn
+    signIn,
+    renderImageFromDB
 })(formWrapped);
