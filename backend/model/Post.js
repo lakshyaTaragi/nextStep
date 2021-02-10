@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const { ObjectId } = Schema.Types;
 
+const User = require('./User'); 
+
 const PostSchema = new Schema({
     postedBy:{
         type: ObjectId,
@@ -33,6 +35,10 @@ const CommentSchema = new Schema({
         type: String,
         required: true
     },
+    postId:{
+        type: ObjectId,
+        ref: 'Post'
+    },
     content: {
         type: String,
         required: true
@@ -44,11 +50,31 @@ const CommentSchema = new Schema({
     }]
 });
 
+
+// // PRE MIDDLEWARE FOR DELETING POST
+// PostSchema.pre('deleteOne', (next) => {
+//     // Remove comments on post
+//     console.log('removing comments');
+//     Comment.deleteMany({postId: this._id});
+//     // Remove reference of post 
+//     console.log('removing from user');
+//     User.updateMany(
+//         {myPosts: this._id},
+//         { $pull: {myPosts: this._id} }
+//         //! {multi: true} --> use at time of tagged posts
+//     );
+//     next();
+// });
+
+
 const Post = mongoose.model('Post', PostSchema);
 const Comment = mongoose.model('Comment', CommentSchema);
+
 
 
 module.exports = {
     Post,
     Comment
 };
+
+
