@@ -1,11 +1,14 @@
-const validate = formValues => {
-    const errors = {};
+import users from '../../../apis/users';
+
+
+export const validate = formValues => {
+    const errors = {};  
+    
+    if (!formValues.username) {errors.username = 'Required'};
+    if(formValues.username && formValues.username.split(" ").length>1)  {errors.username = 'Invalid username. Must be a single word'}; 
 
     if (!formValues.firstName) {errors.firstName = 'Required'}
     if (!formValues.lastName) {errors.lastName = 'Required'}
-
-    // ! later add availability check facility
-    if (!formValues.username) {errors.username = 'Required'}
 
     if (!formValues.email) {
         errors.email = 'Required'
@@ -26,12 +29,7 @@ const validate = formValues => {
     if (!formValues.school) {errors.school = 'Required'}
     if (!formValues.schoolCity) {errors.schoolCity = 'Required'}
     
-
     if (!formValues.college) {errors.college = 'Required'};
-
-    
 
     return errors;
 };
-
-export default validate;

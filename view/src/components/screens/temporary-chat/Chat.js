@@ -38,7 +38,7 @@ const Chats = (props) => {
           </div>       
         );
       });
-    } else if(chat.length=0) {
+    } else if(chat.length===0) {
       return (
         // TODO: HAVE A LOADER LATER
         <div className="list-group-item list-group-item-danger">

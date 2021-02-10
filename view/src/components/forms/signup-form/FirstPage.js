@@ -1,7 +1,8 @@
 import React from 'react';
 import { Field, reduxForm} from 'redux-form';
 
-import validate from './validate';
+import { validate} from './validate';
+import { asyncValidate } from './asyncValidate';
 import {renderField} from '../renderField';
 
 const FirstPage = (props) => {
@@ -54,6 +55,8 @@ export default reduxForm({
     form: 'signup',
     destroyOnUnmount: false ,    //* to preserve data 
     forceUnregisterOnUnmount: true,     //* unregister fields on unmount
-    validate
+    validate,
+    asyncValidate,
+    asyncChangeFields: ['username']
 })(FirstPage);
 

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { useHistory } from "react-router-dom";
 
 
-import validate from './validate';
+import { validate } from './validate';
 import { renderField } from '../renderField';
 import { signUp, signIn, renderImageFromDB } from '../../../actions';
 import image from '../../../apis/image';

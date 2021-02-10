@@ -37,6 +37,14 @@ router.get('/chat/loadChat/:senderId/:receiverId', (req, res) => {
     );
 });
 
+router.get('/check/:username', (req, res) => {
+    User.find({username: req.params.username}, (err, user) => {
+        if(err) throw err;
+        if(!_.isEmpty(user)) res.send(true);
+        else res.send(false);
+    })
+});
+
 
 // sending-receiving chat message
 // router.get('/chat/:receiverId', (req, res) => {
