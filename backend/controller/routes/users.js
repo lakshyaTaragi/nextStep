@@ -21,7 +21,7 @@ router.get('/populate/:username', (req, res) => {
     .populate({path: 'profilePicture', match: {profilePicture: {$ne:''}}})
     .exec((err, foundUser) => {
         if(err) console.log(err);
-        console.log(foundUser);
+        // console.log(foundUser);
         res.send(foundUser);
     });
 });

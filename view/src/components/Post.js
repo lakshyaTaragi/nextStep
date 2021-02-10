@@ -1,45 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
 
-import { fetchPostById, deletePost, createComment, fetchComments } from '../actions';
+import { fetchPostById, deletePost, fetchComments } from '../actions';
+
 import CommentForm from './forms/CommentForm';
 
 const Post = (props) => {
 
     const [post, setPost] = useState({});
+    const [showComments, setShowComments] = useState(false);
     const [comments, setComments] = useState([]);
 
-    const { currentUser,  fetchPostById, deletePost, postId, fetchComments } = props;
+    const { currentUser, fetchPostById, deletePost, postId, fetchComments, posts, setPosts } = props;
 
     useEffect(() => fetchPostById(postId).then(response => setPost(response[0])), []);
 
-    const renderCommentsList = commentsList => {
-        return commentsList.map(comment => {
-            return (
-                <div key={comment._id}>
-                    {comment.personsName} says {comment.content}
-                </div>
-            );
-        })
-    }
+    const renderCommentsList = commentsList => commentsList.map(comment => (
+        <div key={comment._id}>
+            {comment.personsName} says {comment.content}
+        </div>
+    ))
+
+    
 
     if(!_.isEmpty(post)){
-        console.log(post);
         return (
             <div className="card ui raised segment" style={{width: "18rem"}} key={post._id}>
-                <div className="card-body">    
+                <div className="card-body">
+
+
+                    {/* Post's content */}
                     <div className="post content">
-
-                        {/* //! onClick={()=>fetchPostById(post._id)}  */}
-
                         <h5 className="card-title">{post.title}</h5>                   
                         <p className="card-text">{post.content}</p>
                     </div>
         
+                    
+                    {/* Update/Delete options to authorized user */}
                     {!_.isEmpty(currentUser) && post.postedBy === currentUser._id ? 
+                        
                         <div className="btn-group" role="group" aria-label="Basic mixed styles example">
                         <Link className="btn btn-warning" to={{
                         pathname: `/${currentUser.username}/updatepost`,
@@ -48,32 +49,53 @@ const Post = (props) => {
                         }} >
                             Update post
                         </Link>
-                        <button className="btn btn-danger" onClick={() => {
-                            deletePost(post._id);
 
-                            props.setPosts(_.remove(props.posts, (thisPost) => thisPost._id !== post._id )); 
+                        <button 
+                            className="btn btn-danger" 
+                            onClick={() => {
+                                deletePost(post._id);
+                                setPosts(_.remove(posts, (thisPost) => thisPost._id !== post._id )); 
+                        }}>
+                            Delete post
+                        </button>
 
-                        }}> Delete post </button>
                     </div>
                     : null}
 
-                    {!_.isEmpty(comments) ? renderCommentsList(comments): null}
 
-                    <CommentForm postId={post._id} setPost={setPost} setComments={setComments} comments_ids={post.comments}/>
-                    
+                    {/* Show/Hide comments button */}
                     <button className="btn btn-warning" onClick={async () => {
-                        const commentsList = await fetchComments(post.comments);
-                        setComments(commentsList);
+                        setShowComments(!showComments);
+                        if(_.isEmpty(comments)){
+                            fetchComments(post.comments)
+                            .then(res => {
+                                console.log(res);
+                                setComments(res);
+                            });  
+                        } 
                     }}>
-                        {post.comments.length} comments... click to view
+                        {!showComments ? 'View comments': 'Hide comments'}
                     </button>
 
-                                {/* //TODO: RENDER COMMENTS LIST AND ADD A COMMENT TEXT INPUT FORM SECTION */}
+                    {/* Comments List */}
+                    {showComments ? renderCommentsList(comments): null}
+
+                    {/* Add comment form */}
+                    <CommentForm 
+                        form={`commentBox_${postId}`} 
+                        postId={post._id} 
+                        setPost={setPost} 
+                        setComments={setComments} 
+                        comments_ids={post.comments}
+                        setShowComments={setShowComments}
+                    />
+
                 </div>
             </div>
         );
     } else {
         return (
+            // Content loading animation
             <div className="card ui raised segment" style={{width: "18rem"}} >
                 <div className="card-body ui placeholder">    
                     <div className="post content">

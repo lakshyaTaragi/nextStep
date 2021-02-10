@@ -104,14 +104,42 @@ export const updatePost = (formValues, postId) => async () => {
 } 
 
 
-// ! Delete post
+//  Delete post
 export const deletePost = (postId) => async () => {
-    await posts.delete(`/deletepost/${postId}`);
+    const res = await posts.delete(`/deletepost/${postId}`);
+    console.log(res.data);
 } 
 
 
 
-//! *****************************************************************************
+// *****************************************************************************
+//! COMMENT RELATED ACTIONS
+
+// Create comment
+export const createComment = (userId, username, formValues, postId ) => async () => {
+
+    const response = await posts.post(
+        '/createComment',
+        {userId, username, ...formValues, postId} 
+    );
+    
+    return response.data;
+
+}
+
+// Fetch comments of a post
+export const fetchComments = (comments_ids) => async () => {
+
+    const response = await posts.post('/getComments', comments_ids);
+
+    return response.data;
+
+}
+
+
+
+
+// *****************************************************************************
 //! CHAT RELATED ACTIONS
 
 export const sendChat = (formValues, senderId, receiverId, socket) => async () => {
@@ -126,35 +154,8 @@ export const loadChat = (senderId, receiverId) => async () => {
 };
 
 
-//! *****************************************************************************
-//! COMMENT RELATED ACTIONS
-// ! Create comment
-export const createComment = (userId, username, formValues, postId ) => async () => {
-    console.log('createComment called');
-    await posts.post(
-        '/createComment',
-        {userId, username, ...formValues, postId} 
-    );    
-}
-
-// !fetch comments for a post
-export const fetchComments = (comments_ids) => async () => {
-    const response = await posts.post('/getComments', comments_ids);
-    return response.data;
-}
-
-// // ! Update comment
-// export const updatePost = (formValues, postId) => async () => {
-//     await posts.patch(
-//         '/updatepost',
-//         {...formValues, postId}
-//     );
-// } 
 
 
-// // ! Delete comment
-// export const deletePost = (postId) => async () => {
-//     await posts.delete(`/deletepost/${postId}`);
-// } 
+
 
 

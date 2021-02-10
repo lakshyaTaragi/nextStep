@@ -6,17 +6,21 @@ import { createComment, fetchPostById, fetchComments } from '../../actions';
 
 const CommentForm = (props) => {
 
-    const { handleSubmit, pristine, reset, submitting, currentUser, postId, createComment, fetchPostById, setPost, setComments, fetchComments } = props; 
+    const { handleSubmit, pristine, reset, submitting,          //redux-form
+        postId, setPost, setComments, setShowComments,          //parent
+        createComment,                                          //a.c.
+        currentUser } = props;                                  //state 
 
 
     const onSubmit = formValues => {
-        console.log(currentUser._id, currentUser.username, formValues, postId);
-        createComment(currentUser._id, currentUser.username, formValues, postId);
-        fetchPostById(postId).then(res => {
-            setPost(res[0]);
-            reset();
-        });
-        fetchComments(props.comments_ids).then(res => setComments(res[0]));
+        createComment(currentUser._id, currentUser.username, formValues, postId)
+        .then( updatedPost => {
+            //Update post and comments on Post component
+            setPost(updatedPost);       // needed later to show the no of comments beside icon
+            setComments(updatedPost.comments);
+            setShowComments(true);
+        });        
+        reset();    //Wipe the comment input 
     };
 
     return(
@@ -36,7 +40,6 @@ const CommentForm = (props) => {
     );
 
 }; 
-
 
 const formWrapped = reduxForm({
     form: 'comment'
