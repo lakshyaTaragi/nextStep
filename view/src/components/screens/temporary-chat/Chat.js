@@ -7,13 +7,12 @@ import { loadChat } from '../../../actions';
 const Chats = (props) => {
 
   const [chat, setChat] = useState([]);
-
-  const receiver = JSON.parse(localStorage.getItem('receiver'));
+  const receiver = props.location.state;
 
   const {currentUser, loadChat, socket} = props;
 
   const loadChatAndSet = () => {
-    loadChat(currentUser._id, receiver.id)
+    loadChat(currentUser._id, receiver._id)
     .then(response => {
       if(response.length > 0){
         setChat(response[0].messages);
@@ -74,7 +73,8 @@ const Chats = (props) => {
     <div className="ui raised very padded text container segment">
       
       <header className="ui header">
-        <h1>{receiver.username}</h1>
+        <h1>{receiver.name}</h1>
+        @{receiver.username}
       </header>
 
       <main className="chat-main">
@@ -85,7 +85,7 @@ const Chats = (props) => {
 
       </main>
 
-      <MessageForm receiverId={receiver.id}/>
+      <MessageForm receiverId={receiver._id}/>
       
     </div>
 

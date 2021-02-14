@@ -112,12 +112,32 @@ const Profile = (props) => {
             );
         }
     }
+
+    const renderMessageButton = (userId) => {
+        if(userId!==cu._id){
+            const {_id, name, username, profilePicture, isMentor} = extraInfo;
+            return (
+                <button className="ui button" type="button">
+                    <Link 
+                        to={{
+                            pathname: `/${cu.username}/chat`,
+                            state: {_id, name, username, profilePicture, isMentor}
+                        }}
+                    >
+                        Send message
+                    </Link>
+                </button>
+            );
+        }
+    }
     
 
     return (
         <div>
 
             {renderProfileInfo(extraInfo)}
+
+            {renderMessageButton(userId)}
 
             {renderPostsList(posts)}
 

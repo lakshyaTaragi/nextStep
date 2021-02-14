@@ -27,8 +27,7 @@ const SignIn = (props) => {
                     history.push(`/profile/${formValues.username}`, {userId: response.user._id});
                 }
             } else {
-                // history.go(0);
-                console.log("wrong");
+                history.go(0);
             }
         });
     };
