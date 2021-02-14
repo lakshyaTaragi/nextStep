@@ -5,8 +5,8 @@ import _ from 'lodash';
 
 import {  fetchAllPosts , renderImageFromDB } from '../../actions';
 
-
 import Post from '../Post';
+import ChatList from './temporary-chat/ChatList';
 
 const Home = (props) => {
 
@@ -58,7 +58,7 @@ const Home = (props) => {
                 </div>
                 <div className="ui right close rail">
                     <div className="ui segment">
-                    Right Rail Content
+                    <ChatList/>
                     </div>
                 </div>
                 <p>zxzxz</p>
@@ -71,8 +71,6 @@ const Home = (props) => {
         </div>
     );
 };
-
-// ! Fetch posts
 
 
 const mapStateToProps = (state) => {

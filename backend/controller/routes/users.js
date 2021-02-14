@@ -28,12 +28,18 @@ router.get('/populate/:userId', (req, res) => {
     });
 });
 
+
 router.get('/chat/loadChat/:senderId/:receiverId', (req, res) => {
     const {senderId, receiverId} = req.params;
-    ChatRoom.find(
+    // console.log('loadChat')
+    ChatRoom.findOneAndUpdate(
         { members: { $all: [senderId, receiverId] } },
+        
+        {  $set: {'messages.$[message].isRead': true} },
+        { arrayFilters: [{ 'message.receiver': senderId }] },
         (err, result) => {
             if(err) throw err;
+            // console.log(result);
             res.send(result);
         }
     );

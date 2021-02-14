@@ -7,17 +7,17 @@ const UserSchema = new Schema({
     
     isMentor: {
         type: Boolean,
-        //required: true
+        required: true
     },
     
     name:{
         type: String,
-        //required: true
+        required: true
     },
 
     username:{
         type: String,
-        ////required: true
+        required: true
     },
 
     email:{
@@ -27,18 +27,18 @@ const UserSchema = new Schema({
 
     password:{
         type: String,
-        //required: true
+        required: true
     },
     
     city:{
         type: String,
-        //required: true
+        required: true
     },
 
     school:{
         type: ObjectId,
         ref: 'School',
-        //required: true
+        required: true
     },
 
     coaching:{

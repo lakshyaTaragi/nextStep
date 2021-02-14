@@ -14,8 +14,9 @@ const Chats = (props) => {
   const loadChatAndSet = () => {
     loadChat(currentUser._id, receiver._id)
     .then(response => {
-      if(response.length > 0){
-        setChat(response[0].messages);
+      console.log(response);
+      if(response.messages.length > 0){
+        setChat(response.messages);
       } 
     });
   }
@@ -27,6 +28,8 @@ const Chats = (props) => {
 
   const renderChat = (chat) => {
 
+    // var unreadMessagesStart = false;
+
     if(chat.length>0){
 
       return chat.map(message => {
@@ -37,8 +40,10 @@ const Chats = (props) => {
         
         let name = areWe?currentUser.username:receiver.username;
 
+        // if(!message.isRead) unreadMessagesStart = true; //! some special appearance to unread messages
         return (
           <div>
+            {!message.isRead ? <hr/> : null}
             <li className={classes} key={message._id}>
               <div><b>{name}  {message.time}</b> <br/>{message.text}</div>
             </li>

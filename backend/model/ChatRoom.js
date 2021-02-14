@@ -25,6 +25,10 @@ const ChatRoomSchema = new Schema({
         time:{
             type:String,
             required:true
+        },
+        isRead:{
+            type: Boolean,
+            required: true
         }
     }]
 }); 

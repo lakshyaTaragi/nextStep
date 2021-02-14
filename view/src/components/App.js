@@ -14,7 +14,7 @@ import Post from './forms/PostForm';
 import history from '../history';
 import { signOut, saveSocket } from '../actions';
 
-import AllChats from './screens/temporary-chat/AllChats';
+import ChatList from './screens/temporary-chat/ChatList';
 import Chat from './screens/temporary-chat/Chat';
 
 
@@ -101,7 +101,7 @@ const App = (props) => {
 
                 {authorizedRoute(Chat,'chat')}
 
-                <Route path="/allchats" exact component={AllChats} />
+                {/* <Route path="/allchats" exact component={ChatList} /> */}
 
 
             </Router>
