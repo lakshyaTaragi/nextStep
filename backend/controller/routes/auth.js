@@ -42,10 +42,6 @@ router.post('/signup', (req, res) => {
             // set pw to hashed
             newUser.password = hash;
 
-            // save in user db
-            new User(newUser).save()
-            .then(() => console.log('new user saved'))
-            .catch(err => console.log(err));
             
             // Save in school db
             school.save()
@@ -61,9 +57,16 @@ router.post('/signup', (req, res) => {
             college.save()
             .then(()=>console.log('college saved'))
             .catch(err => console.log(err));
+
+            // save in user db
+            new User(newUser).save()
+            .then((savedUser) => {
+                console.log('user saved');
+                res.send(savedUser._id); 
+            })
+            .catch(err => console.log(err));
         });
     });
-    res.send(true); 
 });
 
 
@@ -71,6 +74,7 @@ router.post('/signup', (req, res) => {
 router.post('/signin', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if(err) console.log(err);
+        // console.log({info, user});
         return res.send({info, user});
     })(req, res, next);
 });

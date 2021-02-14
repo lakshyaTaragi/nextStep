@@ -11,7 +11,8 @@ import image from '../apis/image';
 
 
 export const signUp = (formValues, isMentor) => async () => {
-    await auth.post('/signup', {...formValues, isMentor});
+    const response = await auth.post('/signup', {...formValues, isMentor});
+    return response.data;
 };
 
 // export const fileUpload = (file) => async () => {
@@ -24,7 +25,8 @@ export const signIn = (formValues) => async dispatch => {
     const response = await auth.post('/signin', formValues); 
     const saveUser = {...response.data, user:_.omit(response.data.user,'chats','myPosts','password')};
     localStorage.setItem('currentUser',JSON.stringify(saveUser)); 
-    dispatch({type:SIGN_IN, payload:saveUser});  
+    dispatch({type:SIGN_IN, payload:saveUser});
+    return response.data;  
 };
 
 export const signOut = (socket) => async dispatch => {
@@ -42,14 +44,13 @@ export const saveSocket = socket => async dispatch => dispatch({type: SAVE_SOCKE
 
 export const populateInfo = (username) => async () => {
     const response = await users.get(`/populate/${username}`);
-    console.log(response.data);
     return response.data;
 }
 
-export const getImage = id => async () => {
-    const response = await image.get(`/show/${id}`);
-    return response.data;
-}
+// export const getImage = id => async () => {
+//     const response = await image.get(`/show/${id}`);
+//     return response.data;
+// }
 
 export const renderImageFromDB = (rec_image,classes) => {
     const dp = rec_image.img.data.data;
@@ -72,7 +73,7 @@ export const renderImageFromDB = (rec_image,classes) => {
 //! *****************************************************************************
 //! POSTS RELATED ACTIONS
 
-// ! Create post
+// Create post
 export const createPost = (formValues, userId) => async () => {
     await posts.post(
         '/createpost',
@@ -80,14 +81,21 @@ export const createPost = (formValues, userId) => async () => {
     );    
 } 
 
-export const fetchMyPosts = (userId) => async () => {
-    const response = await posts.get(`/myposts/${userId}`);
+// Fetch all posts --> to create home feed
+export const fetchAllPosts = () => async () => {
+    const response = await posts.get('/allPosts');
     return response.data;
 };
 
+// Fetch users posts with id
+export const fetchUsersPosts = (userId) => async () => {
+    const response = await posts.get(`/usersPosts/${userId}`);
+    return response.data;
+};
+
+// Fetch post with postId
 export const fetchPostById = (postId) => async () => {
     const response = await posts.get(`fetchpost/${postId}`);
-    console.log(response.data);
     return response.data;
 };
 
@@ -106,8 +114,7 @@ export const updatePost = (formValues, postId) => async () => {
 
 //  Delete post
 export const deletePost = (postId) => async () => {
-    const res = await posts.delete(`/deletepost/${postId}`);
-    console.log(res.data);
+    await posts.delete(`/deletepost/${postId}`);
 } 
 
 

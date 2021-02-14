@@ -37,17 +37,18 @@ const App = (props) => {
     }
     
 
-    const authenticatedRoute = (Component,routeName) => {
+    const authorizedRoute = (Component,routeName) => {
         return(
             <Route
                 path={`/:username/${routeName}`}
                 exact
                 render={(propers) => {
+                        const address = propers.location.pathname;
                         const { match: { params } } = propers;
                         if(currentUser && params.username===currentUser.username){
                             return <Component {...propers}/>;
                         } else{
-                            return history.push('/signin');
+                            return history.push('/signin', {address});
                         }                        
                     }                        
                 }
@@ -56,12 +57,10 @@ const App = (props) => {
     }; 
 
     return (
-        <div>
+        <div className="ui container">
             <Router history={history}>
                 
                 <Route path="/" exact component={Landing} />
-                
-                <Route path="/home" exact component={Home} />
                 
                 <Route
                     path='/signup/mentor'
@@ -82,11 +81,25 @@ const App = (props) => {
                 <Route path="/signin" exact component={SignIn} />
                 
 
-                {authenticatedRoute(Profile,'profile')}
+                {/* {authorizedRoute(Profile,'profile')} */}
+                
+                <Route
+                    path={`/profile/:username`}
+                    exact
+                    render={(props) => {                                               
+                            if(!_.isEmpty(currentUser)) return <Profile {...props} />;
+                            else return history.push('/signin');                            
+                        }                        
+                    }
+                />
 
-                {authenticatedRoute(Post,'createpost')}
-                {authenticatedRoute(Post,'updatepost')}
-                {authenticatedRoute(Chat,'chat')}
+                {authorizedRoute(Home,'home')}
+
+                {authorizedRoute(Post,'createpost')}
+
+                {authorizedRoute(Post,'updatepost')}
+
+                {authorizedRoute(Chat,'chat')}
 
                 <Route path="/allchats" exact component={AllChats} />
 

@@ -21,8 +21,8 @@ const SecondPage = (props) => {
     const { handleSubmit, pristine, previousPage, submitting, signUp, signIn, isMentor, currentUser, renderImageFromDB } = props;
     
     const onSubmit = (formValues) => {
-        signUp(formValues, isMentor);
-        setRegisteredUser(formValues);
+        signUp(formValues, isMentor)
+        .then(_id => setRegisteredUser({...formValues, _id}));        
     };
 
     const onFileChoice = e => {
@@ -119,7 +119,13 @@ const SecondPage = (props) => {
                     <div>
                         <div className="btn btn-primary" 
                             onClick={() => {
-                                signIn(registeredUser).then(()=>history.push(`/${registeredUser.username}/profile`));
+                                signIn(registeredUser)
+                                .then(() => {
+                                    history.push(
+                                        `/profile/${registeredUser.username}`,
+                                        {userId: registeredUser._id}
+                                    );
+                                });
                         }}>
                             Login as {registeredUser.username}
                         </div>

@@ -12,9 +12,9 @@ const ChatRoom = require('../../model/ChatRoom');
 const {Coaching, School, College} = require('../../model/Institute');
 
 // populate
-router.get('/populate/:username', (req, res) => {
-    const {username} = req.params;
-    User.findOne({username})
+router.get('/populate/:userId', (req, res) => {
+    const {userId} = req.params;
+    User.findOne({_id: userId})
     .populate('coaching')
     .populate('school')
     .populate({path: 'college', isMentor:true})

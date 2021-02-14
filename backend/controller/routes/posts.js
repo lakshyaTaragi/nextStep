@@ -42,22 +42,39 @@ router.post('/createpost', (req, res) => {
 
 });
 
-// ! for fetching personal posts
-router.get('/myposts/:userid', (req, res) => {
+// For fetching posts of a user
+router.get('/usersPosts/:userid', (req, res) => {
     const {userid} = req.params;
-    Post.find({postedBy: userid}, (err, myposts)=> {
+    //! LATER USE USER MODEL FOR FINDING (AFTER POST DELETION ISSUE GETS RESOLVED)
+    Post.find({postedBy: userid}, (err, usersPosts)=> {
         if(err) throw err;
-        else res.send(myposts);
+        else res.send(usersPosts);
+    });
+});
+
+// For fetching all posts for home feed
+router.get('/allPosts', (req, res) => {
+    Post.find({}, (err, allPosts)=> {
+        if(err) throw err;
+        else res.send(allPosts);
     });
 });
 
 
-// ! for fetching a post by id
+// Fetch a post by postId
 router.get('/fetchpost/:postId', (req, res) => {
     const {postId} = req.params;
-    Post.find({_id: postId}, (err, foundPost) => {
+    Post.findById(postId, (err, foundPost) => {
         if(err) throw err;
-        else res.send(foundPost);
+        else {
+            User.findById(foundPost.postedBy, (err, person) => {
+                if(err) throw err;                
+                else{
+                    const {name, username, isMentor} = person;
+                    res.send({...foundPost,
+                    name, username, isMentor});
+            }});            
+        }
     });
 });
 
@@ -73,24 +90,26 @@ router.patch('/updatepost', (req, res) => {
 
 
 // Delete post with id
-router.delete('/deletepost/:postid', (req, res) => {
+router.delete('/deletepost/:postId', (req, res) => {
     const {postId} = req.params;
     
-    Post.findOneAndDelete(postId, (err, deletedPost) => {
-        if(err) throw err; 
-        if(!_.isEmpty(deletedPost.comments)){
-            // Delete the comments
-            Comment.deleteMany({_id: { $in: deletedPost.comments}}, (err, deleted) => {
-                if(err) throw err;
-            });
+    Post.findByIdAndDelete(postId, (err, deletedPost) => {
+        if(err) throw err;
+        else{
+            if(!_.isEmpty(deletedPost.comments)){
+                // Delete the comments
+                Comment.deleteMany({_id: { $in: deletedPost.comments}}, (err, deleted) => {
+                    if(err) throw err;
+                });
+            }
             // Delete post reference
-            User.updateOne(
+            User.findByIdAndUpdate(
                 {_id: deletedPost.postedBy},
                 { $pull: {myPosts: deletedPost._id} },
                 //! {multi: true} --> use at time of tagged posts
-                (err, updated) => {if(err) throw err;}
+                (err) => { if(err) throw err; }
             );
-        }
+        }       
     });
 });
 

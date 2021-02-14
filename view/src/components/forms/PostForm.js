@@ -27,10 +27,10 @@ const Post = (props) => {
     const onSubmit = formValues => {
         if(formAction==="create"){
             createPost(formValues, currentUser._id, currentUser.username)
-            .then(()=>history.push(`/${currentUser.username}/profile`));
+            .then(()=>history.push(`/profile/${currentUser.username}`, {userId: currentUser._id}));
         } else if(formAction==="update"){
             updatePost(formValues, props.location.postValues._id, currentUser.username)
-            .then(()=>history.push(`/${currentUser.username}/profile`));
+            .then(()=>history.push(`/profile/${currentUser.username}`, {userId: currentUser._id}));
         } 
     };
 

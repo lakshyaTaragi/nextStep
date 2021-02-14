@@ -2,162 +2,126 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'; 
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import defaultpic from './defaultpic.jpg'
 
-
-//! try to move to api folder later
-
-import { signOut, fetchMyPosts, deletePost, fetchPostById, populateInfo, getImage, renderImageFromDB } from '../../actions';
-
+import { fetchUsersPosts, populateInfo, renderImageFromDB } from '../../actions';
 import Post from '../Post';
+
+import defaultpic from './defaultpic.jpg';
 
 
 const Profile = (props) => {
     
-    
-    const [onlineUsers, setOnlineUsers] = useState([]); 
-
     const [posts, setPosts] = useState([]); 
     const [extraInfo, setExtraInfo] = useState({});
-
     
-    const { cu, socket, fetchMyPosts, fetchPostById, signOut, deletePost, message, populateInfo, getImage, renderImageFromDB } = props;
+    // , meta: { touched, error }
+    // const { userId } = props.location.state;
+    const { cu,                                                     //store
+         fetchUsersPosts, populateInfo, renderImageFromDB,          //ac
+         location: {state: {userId}}} = props;                      //from location(history)
+    
+    // var userId;                                                                 //! CHECK THIS LATER
+    // if(!_.isEmpty(props.location)) userId = props.location.userId;
+    // else userId = cu._id;
     
     
     useEffect(()=>{
-        fetchMyPosts(cu._id)
-        .then(response => setPosts(response));
         
-        // ! hardcoded for now
-        setOnlineUsers([
-            {
-                username:"a",
-                id:"5feb5cabf03208381cfd245f"
-            },
-            {
-                username:"b",
-                id:"5feb5cb2f03208381cfd2463"
-            },
-            {
-                username:"c",
-                id:"5feb5cc1f03208381cfd2467"
-            }
-        ]);
+        fetchUsersPosts(userId)
+        .then(response => setPosts(response));
 
-        populateInfo(cu.username)
-        .then(response => setExtraInfo(response));
-  
+        populateInfo(userId)
+        .then(response => setExtraInfo(response));  
 
     },[]);
 
 
 
-    const createOnlineUsersList = (onlineUsers) => {
-        return onlineUsers.map(onlineUser => {
-            if(onlineUser.id!==cu._id){
-                return (
-                    <div>
-                        <Link className="btn btn-success" key={onlineUser.id} onClick={() => localStorage.setItem('receiver',JSON.stringify(onlineUser))} to={{
-                        pathname: `/${cu.username}/chat`,
-                        }} >
-                            {onlineUser.username}
-                        </Link>
-                    </div>
-                );            
-            }
-        });
-    };
+    // const createOnlineUsersList = (onlineUsers) => {    //! online users/chat list/ IN GENERAL ANY USER LIST
+    //     return onlineUsers.map(onlineUser => {
+    //         if(onlineUser.id!==cu._id){
+    //             return (
+    //                 <div key={onlineUser._id}>
+    //                     <Link className="btn btn-success" key={onlineUser.id} onClick={() => localStorage.setItem('receiver',JSON.stringify(onlineUser))} to={{
+    //                     pathname: `/${cu.username}/chat`,
+    //                     }} >
+    //                         {onlineUser.username}
+    //                     </Link>
+    //                 </div>
+    //             );            
+    //         }
+    //     });
+    // };
 
-    const renderMyPostsList = (myPosts) => {
+    const renderPostsList = (myPosts) => {
         return myPosts.map(post => {
-            return <Post postId={post._id} setPosts={setPosts} posts={posts} />;
+            return <Post postId={post._id}/>;
         });
-    };
+    }
 
-
-    // ! deal about page refreshing on delete post
     const renderProfileInfo = extraInfo => {
-        if(!_.isEmpty(extraInfo)){            
+        
+        if(!_.isEmpty(extraInfo)){         
      
-
             return (
                 <div className="ui items">
                     <div className="item">
-                        {extraInfo.profilePicture ? renderImageFromDB(extraInfo.profilePicture,"circular"):<img className="ui small circular image" src={defaultpic} />}
                         
-                        
-                       
-                        
-                        
+                        {extraInfo.profilePicture ? 
+                            renderImageFromDB(extraInfo.profilePicture,"circular")
+                            :<img className="ui small circular image" src={defaultpic} 
+                        />}                     
+                                               
                         <div className="content">
-                        <a className="header">{extraInfo.name}</a>
-                        <div className="meta">
-                            <span>{`@${extraInfo.username}`}</span>
-                        </div>
-                        <div className="description">
-                            <p></p>
-                        </div>
-                        <div className="extra">
-                            <div>From: {extraInfo.city}</div>
-                            <div>School: {extraInfo.school.name} ({extraInfo.school.city})</div>
-                            <div>Coaching: {extraInfo.coaching.name} ({extraInfo.coaching.city})</div>
-                            {extraInfo.isMentor?<div>College: {extraInfo.college.name}</div>:null}
-                        </div>
+
+                            <a className="header">  {extraInfo.name}    </a>
+
+                            <div className="meta">
+                                <span>{`@${extraInfo.username}`}</span>
+                            </div>
+
+                            <div className="extra">
+                                
+                                <div>From: {extraInfo.city}</div>
+                                
+                                <div>School: {extraInfo.school.name} ({extraInfo.school.city})</div>
+                                
+                                <div>Coaching: {extraInfo.coaching.name} ({extraInfo.coaching.city})</div>
+                                
+                                {extraInfo.isMentor?<div>College: {extraInfo.college.name}</div>:null}
+
+                            </div>
                         </div>
                     </div>
                 </div>
             );
         }
     }
+
+    const renderNewPostButton = (userId) => {
+        if(userId===cu._id){
+            return (
+                <button className="ui button" type="button">
+                    <Link to={{
+                        pathname: `/${cu.username}/createpost`,
+                        formAction:"create"
+                    }} >
+                        Create new post
+                    </Link>
+                </button>
+            );
+        }
+    }
     
-    
-    
-    
+
     return (
         <div>
-            Profile component
-            <br/>
-            
-   
-            
- 
+
             {renderProfileInfo(extraInfo)}
 
+            {renderPostsList(posts)}
 
-
-
-            {message}
-            <br/>
-            <button className="negative ui button" type="button" onClick={() => signOut(socket)}>
-                Logout
-            </button>
-            <ul>
-            {createOnlineUsersList(onlineUsers)}
-            {renderMyPostsList(posts)}
-            </ul>
-            <br/>
-            <br/>
-            <br/>
-
-
-            <br/>
-            <br/>
-            <br/>
-            
-            <button className="positive ui button" type="button">
-                <Link to={{
-                    pathname: `/${cu.username}/createpost`,
-                    formAction:"create"
-                }} >
-                    Create new post
-                </Link>
-            </button>
-
-            <br/>
-            <br/>
-
-            <br/>
-            <br/>
+            {renderNewPostButton(userId)}
 
         </div>
     );
@@ -165,18 +129,13 @@ const Profile = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        message: state.auth.message,
-        cu:state.auth.currentUser,
-        socket:state.auth.socket        
+        cu:state.auth.currentUser    
     };
 }
 
 export default connect(mapStateToProps,{
-    signOut,
-    fetchMyPosts,
-    fetchPostById,
-    deletePost,
+    fetchUsersPosts,
     populateInfo,
-    getImage,
     renderImageFromDB
 })(Profile);
+
