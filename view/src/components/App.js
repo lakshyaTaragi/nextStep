@@ -48,7 +48,7 @@ const App = (props) => {
                         if(currentUser && params.username===currentUser.username){
                             return <Component {...propers}/>;
                         } else{
-                            return history.push('/signin', {address});
+                            return history.push('/signin', {address, username:params.username});
                         }                        
                     }                        
                 }
