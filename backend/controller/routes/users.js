@@ -9,19 +9,21 @@ const router = express.Router();
 //Import mongo models
 const User = require('../../model/User');
 const ChatRoom = require('../../model/ChatRoom');
-const {Coaching, School, College} = require('../../model/Institute');
+// const {Coaching, School, College} = require('../../model/Institute');
 
 // populate
 router.get('/populate/:userId', (req, res) => {
     const {userId} = req.params;
     User.findOne({_id: userId})
+    .populate('myPosts')
     .populate('coaching')
     .populate('school')
     .populate({path: 'college', isMentor:true})
     .populate({path: 'profilePicture', match: {profilePicture: {$ne:''}}})
     .exec((err, foundUser) => {
         if(err) console.log(err);
-        // console.log(foundUser);
+        foundUser.password = undefined;
+        foundUser.chatRooms = undefined;   
         res.send(foundUser);
     });
 });

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { fetchUsersPosts, populateInfo, renderImageFromDB } from '../../actions';
+import { populateInfo, renderImageFromDB } from '../../actions';
 import Post from '../Post';
 
 import defaultpic from './defaultpic.jpg';
@@ -11,29 +11,21 @@ import defaultpic from './defaultpic.jpg';
 
 const Profile = (props) => {
     
-    const [posts, setPosts] = useState([]); 
-    const [extraInfo, setExtraInfo] = useState({});
-    
-    // , meta: { touched, error }
-    // const { userId } = props.location.state;
+    const [content, setContent] = useState({posts: [], extraInfo: {}})
+
     const { cu,                                                     //store
-         fetchUsersPosts, populateInfo, renderImageFromDB,          //ac
+         populateInfo, renderImageFromDB,                           //ac
          location: {state: {userId}}} = props;                      //from location(history)
     
-    // var userId;                                                                 //! CHECK THIS LATER
-    // if(!_.isEmpty(props.location)) userId = props.location.userId;
-    // else userId = cu._id;
     
-    
-    useEffect(()=>{
-        
-        fetchUsersPosts(userId)
-        .then(response => setPosts(response));
-
+    useEffect(() => 
         populateInfo(userId)
-        .then(response => setExtraInfo(response));  
-
-    },[]);
+        .then(response => 
+            setContent({
+                posts: response.myPosts, 
+                extraInfo: _.omit(response, 'myPosts')
+        }))  
+    ,[]);
 
 
 
@@ -115,7 +107,7 @@ const Profile = (props) => {
 
     const renderMessageButton = (userId) => {
         if(userId!==cu._id){
-            const {_id, name, username, profilePicture, isMentor} = extraInfo;
+            const {_id, name, username, profilePicture, isMentor} = content.extraInfo;
             return (
                 <button className="ui button" type="button">
                     <Link 
@@ -135,11 +127,11 @@ const Profile = (props) => {
     return (
         <div>
 
-            {renderProfileInfo(extraInfo)}
+            {renderProfileInfo(content.extraInfo)}
 
             {renderMessageButton(userId)}
 
-            {renderPostsList(posts)}
+            {renderPostsList(content.posts)}
 
             {renderNewPostButton(userId)}
 
@@ -154,7 +146,6 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps,{
-    fetchUsersPosts,
     populateInfo,
     renderImageFromDB
 })(Profile);

@@ -87,12 +87,6 @@ export const fetchAllPosts = () => async () => {
     return response.data;
 };
 
-// Fetch users posts with id
-export const fetchUsersPosts = (userId) => async () => {
-    const response = await posts.get(`/usersPosts/${userId}`);
-    return response.data;
-};
-
 // Fetch post with postId
 export const fetchPostById = (postId) => async () => {
     const response = await posts.get(`fetchpost/${postId}`);

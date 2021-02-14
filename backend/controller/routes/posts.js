@@ -42,15 +42,6 @@ router.post('/createpost', (req, res) => {
 
 });
 
-// For fetching posts of a user
-router.get('/usersPosts/:userid', (req, res) => {
-    const {userid} = req.params;
-    //! LATER USE USER MODEL FOR FINDING (AFTER POST DELETION ISSUE GETS RESOLVED)
-    Post.find({postedBy: userid}, (err, usersPosts)=> {
-        if(err) throw err;
-        else res.send(usersPosts);
-    });
-});
 
 // For fetching all posts for home feed
 router.get('/allPosts', (req, res) => {
