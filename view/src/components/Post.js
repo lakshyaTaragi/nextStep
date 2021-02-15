@@ -5,10 +5,9 @@ import _ from 'lodash';
 import history from '../history';
 
 import { fetchPostById, deletePost, fetchComments } from '../actions';
-import mentor from './screens/mentor.png'; 
-import mentee from './screens/mentee.png'; 
 
 import CommentForm from './forms/CommentForm';
+import UserTag from './UserTag';
 
 const Post = (props) => {
 
@@ -33,44 +32,6 @@ const Post = (props) => {
         </div>
     ));
 
-    const userTag = (name, username, userId, isMentor) => (
-        <div className="ui feed">
-            <div className="event">
-                <div className="label">
-                    <img src={isMentor ? mentor:mentee}/>
-                </div>
-                <div className="content">
-                    <div className="summary">
-                        <Link 
-                            className="user"
-                            to={{
-                                pathname: `/profile/${username}`,
-                                state: {
-                                    userId: userId
-                                }
-                            }}
-                        >
-                            {name}
-                            <br/>
-                            <div className="meta">
-                            @{username}
-                            </div>
-                        </Link> 
-                        
-                        {/* added you as a friend
-                        <div className="date">
-                        1 Hour Ago
-                        </div> */}
-                    </div>
-                    {/* <div className="meta">
-                        <a className="like">
-                        <i className="like icon"></i> 4 Likes
-                        </a>
-                    </div> */}
-                </div>
-            </div>  
-        </div>
-    );
 
     const postLoading = () => (
         // Content loading animation
@@ -104,7 +65,16 @@ const Post = (props) => {
             <div className="card ui raised segment" style={{width: "18rem"}} key={postId}>
                 <div className="card-body">
 
-                    {userTag(personInfo.name, personInfo.username, post.postedBy, personInfo.isMentor)}
+                        <UserTag 
+                            name = {personInfo.name}
+                            username = {personInfo.username}
+                            linkObj = {
+                                {
+                                    pathname: `/profile/${personInfo.username}`
+                                }
+                            }
+                            isMentor = {personInfo.isMentor} 
+                        />
 
                     {/* Post's content */}
                     <div className="post content">

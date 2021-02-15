@@ -1,7 +1,5 @@
 const express = require('express');
 const _ = require('lodash');
-const mongoose = require('mongoose');
-const { ObjectId } = mongoose.Types;
 
 //Create router
 const router = express.Router();
@@ -14,9 +12,9 @@ const ChatRoom = require('../../model/ChatRoom');
 
 
 // Populate user info --> Profile
-router.get('/populate/:userId', (req, res) => {
-    const {userId} = req.params;
-    User.findOne({_id: userId})
+router.get('/populate/:username', (req, res) => {
+    const {username} = req.params;
+    User.findOne({username})
     .populate('myPosts')
     .populate('coaching')
     .populate('school')
@@ -38,6 +36,18 @@ router.get('/check/:username', (req, res) => {
         if(!_.isEmpty(user)) res.send(true);
         else res.send(false);
     })
+});
+
+// Find and send information of multiple users by ids
+router.post('/getUsers', (req, res) => {
+    const {userIds} = req.body;
+    User.find(
+        {_id: { $in: userIds}},
+        (err, users) => {
+            if(err) throw err;
+            console.log(users);
+        }
+    );
 });
 
 
@@ -74,30 +84,6 @@ router.get('/chat/:userId/unreadInfo/:roomId', (req, res) => {
     });
 
 });
-
-
-// sending-receiving chat message
-// router.get('/chat/:receiverId', (req, res) => {
-//     const {receiverId} = req.params;
-//     var chats = [];
-//     Message.find(
-//         {receiver: receiverId},
-//         (err, message) => {
-//             if(err) throw err;
-//             console.log(message);
-//             chats.push(message);
-//         }
-//     ).then(()=>res.send(chats));        
-// });
-
-// router.get('/chat/:senderId/:receiverId', (req,res)=>{
-//     const {senderId, receiverId} = req.params;
-//     User.find({_id: senderId})
-// });
-
-
-
-
 
 
 //Export router

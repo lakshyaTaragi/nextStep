@@ -121,10 +121,7 @@ const SecondPage = (props) => {
                             onClick={() => {
                                 signIn(registeredUser)
                                 .then(() => {
-                                    history.push(
-                                        `/profile/${registeredUser.username}`,
-                                        {userId: registeredUser._id}
-                                    );
+                                    history.push(`/profile/${registeredUser.username}`);
                                 });
                         }}>
                             Login as {registeredUser.username}
@@ -142,7 +139,7 @@ const SecondPage = (props) => {
                         {uploadDone && 
                             <div>
                                 Uploaded Successfully
-                                {imData?renderImageFromDB(imData, "rounded"):null}
+                                {imData?renderImageFromDB(imData, "small rounded"):null}
                             </div>
                         }
                     </div>

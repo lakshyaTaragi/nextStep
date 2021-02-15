@@ -6,7 +6,7 @@ import users from '../apis/users';
 import posts from '../apis/posts';
 // import image from '../apis/image';
 
-import { SIGN_IN, SIGN_OUT, LOAD_POST_VALUES, SAVE_SOCKET} from './types';
+import { SIGN_IN, SIGN_OUT, LOAD_POST_VALUES, SAVE_SOCKET, NEW_CHATROOM} from './types';
 import image from '../apis/image';
 
 
@@ -52,18 +52,18 @@ export const populateInfo = (username) => async () => {
 //     return response.data;
 // }
 
-export const renderImageFromDB = (rec_image,classes) => {
+export const renderImageFromDB = (rec_image, classes) => {
     const dp = rec_image.img.data.data;
     let TYPED_ARRAY = new Uint8Array(dp);
     const STRING_CHAR = String.fromCharCode.apply(null, TYPED_ARRAY);
     let base64String = btoa(STRING_CHAR);
-    return <img className={`ui small ${classes} image`} src={`data:image/png;base64,${base64String}`}/>
+    return <img className={`ui ${classes} image`} src={`data:image/png;base64,${base64String}`}/>
 }
 
-// export const fetchByUsername = (username) => async dispatch => {
-//     const foundUser = await users.get(`/${username}`);
-//     return foundUser;
-// };
+export const fetchUsersByIds = (userIds) => async () => {
+    const response = await users.post(`/getUsers`, userIds);
+    return response.data;
+};
 
 // export const matchUsernameParam = async (currentUser, pathUsername) => {
 //    if(currentUser.username === pathUsername) return true;
@@ -93,11 +93,11 @@ export const fetchPostById = (postId) => async () => {
     return response.data;
 };
 
-// ! Load post values
+// Load post values
 export const loadPostValues = postValues => ({type: LOAD_POST_VALUES, payload: postValues});
 
 
-// ! Update post
+// Update post
 export const updatePost = (formValues, postId) => async () => {
     await posts.patch(
         '/updatepost',
@@ -156,9 +156,14 @@ export const sendChat = (formValues, senderId, receiverId, socket) => async () =
 export const unreadInfo = (roomId, userId) => async () => {
         console.log('calling unreadInfo');
         const response = await users.get(`/chat/${userId}/unreadInfo/${roomId}`);
-        return response.data;
-    
+        return response.data;  
 };
+
+export const newChatRoom = (newRoom) => async (dispatch) => dispatch({
+        type: NEW_CHATROOM,
+        payload: newRoom
+    });
+
 
 
 

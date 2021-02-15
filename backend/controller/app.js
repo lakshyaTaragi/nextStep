@@ -90,8 +90,8 @@ io.on('connection', socket => {
         isRead: false
       }
 
-      User.exists(
-        {"_id": senderId , "chatRooms.person": receiverId},
+      ChatRoom.exists(
+        { members: { $all: [senderId, receiverId] } },
         (err, result) => {
           if(err) throw err;
 
@@ -124,35 +124,40 @@ io.on('connection', socket => {
               console.log("new room created");
               
               // in sender's
+              const newSenderRoom = {
+                person: receiverId,
+                chatRoom: createdRoom._id
+              };
               User.findByIdAndUpdate(
                 senderId,
                 { $push: {
-                    chatRooms: {
-                      person: receiverId,
-                      chatRoom: createdRoom._id
-                    }
+                    chatRooms: newSenderRoom
                   }
                 },
                 (err) => {
                   if(err) throw err; 
                   console.log("room pushed for sender");
+                  // io.to(senderId).emit('newRoom', newSenderRoom);
                 }
               );
 
               // in receiver's
+              const newReceiverRoom =  {
+                person: senderId,
+                chatRoom: createdRoom._id
+              };
               User.findByIdAndUpdate(
                 receiverId,
                 { $push: {
-                    chatRooms: {
-                      person: senderId,
-                      chatRoom: createdRoom._id
-                    }
+                    chatRooms: newReceiverRoom
                   }
                 },
                 (err) => {
                   if(err) throw err; 
                   console.log("room pushed for receiver");
+                  // io.to(receiverId).emit('newRoom', newReceiverRoom);
                   io.to(receiverId).to(senderId).emit('loadChat');
+                  // inform users of a new chatRoom
                 }
               );
 

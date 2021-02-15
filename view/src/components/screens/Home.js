@@ -11,6 +11,7 @@ import ChatList from './temporary-chat/ChatList';
 const Home = (props) => {
 
     // !Here comes the feed
+    console.log(props);
 
     const [posts, setPosts] = useState([]);
 

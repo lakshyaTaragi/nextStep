@@ -1,4 +1,5 @@
-import { SIGN_IN, SIGN_OUT, SAVE_SOCKET } from '../actions/types';
+import _ from 'lodash';
+import { SIGN_IN, SIGN_OUT, SAVE_SOCKET, NEW_CHATROOM } from '../actions/types';
 
 const INITIAL_STATE = {};
 
@@ -33,6 +34,16 @@ const authReducer = (state = INITIAL_STATE, action) => {
                 currentUser: null,
                 socket: null
             };
+
+        case NEW_CHATROOM:
+            console.log('auth');
+            return {
+                ...state,
+                currentUser: {
+                    ...state.currentUser,
+                    chatRooms: [action.payload,...state.currentUser.chatRooms]
+                }                
+            };           
 
         default:
             return state;

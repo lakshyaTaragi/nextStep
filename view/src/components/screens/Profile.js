@@ -5,45 +5,33 @@ import _ from 'lodash';
 
 import { populateInfo, renderImageFromDB } from '../../actions';
 import Post from '../Post';
+import Chat from './temporary-chat/Chat';
 
 import defaultpic from './defaultpic.jpg';
 
 
 const Profile = (props) => {
+    console.log()
     
     const [content, setContent] = useState({posts: [], extraInfo: {}})
+    const [chatOpen, setChatOpen] = useState(false);
 
     const { cu,                                                     //store
          populateInfo, renderImageFromDB,                           //ac
-         location: {state: {userId}}} = props;                      //from location(history)
+         match: {params: {username}},                               //from location(history)
+         location} = props;
+    
+    
     
     
     useEffect(() => 
-        populateInfo(userId)
+        populateInfo(username)
         .then(response => 
             setContent({
                 posts: response.myPosts, 
                 extraInfo: _.omit(response, 'myPosts')
         }))  
     ,[]);
-
-
-
-    // const createOnlineUsersList = (onlineUsers) => {    //! online users/chat list/ IN GENERAL ANY USER LIST
-    //     return onlineUsers.map(onlineUser => {
-    //         if(onlineUser.id!==cu._id){
-    //             return (
-    //                 <div key={onlineUser._id}>
-    //                     <Link className="btn btn-success" key={onlineUser.id} onClick={() => localStorage.setItem('receiver',JSON.stringify(onlineUser))} to={{
-    //                     pathname: `/${cu.username}/chat`,
-    //                     }} >
-    //                         {onlineUser.username}
-    //                     </Link>
-    //                 </div>
-    //             );            
-    //         }
-    //     });
-    // };
 
     const renderPostsList = (myPosts) => {
         return myPosts.map(post => {
@@ -60,7 +48,7 @@ const Profile = (props) => {
                     <div className="item">
                         
                         {extraInfo.profilePicture ? 
-                            renderImageFromDB(extraInfo.profilePicture,"circular")
+                            renderImageFromDB(extraInfo.profilePicture,"small circular")
                             :<img className="ui small circular image" src={defaultpic} 
                         />}                     
                                                
@@ -90,8 +78,8 @@ const Profile = (props) => {
         }
     }
 
-    const renderNewPostButton = (userId) => {
-        if(userId===cu._id){
+    const renderNewPostButton = (username) => {
+        if(username===cu.username){
             return (
                 <button className="ui button" type="button">
                     <Link to={{
@@ -105,35 +93,28 @@ const Profile = (props) => {
         }
     }
 
-    const renderMessageButton = (userId) => {
-        if(userId!==cu._id){
-            const {_id, name, username, profilePicture, isMentor} = content.extraInfo;
+    const renderToggleButton = (username) => {
+        if(username!==cu.username){          
             return (
-                <button className="ui button" type="button">
-                    <Link 
-                        to={{
-                            pathname: `/${cu.username}/chat`,
-                            state: {_id, name, username, profilePicture, isMentor}
-                        }}
-                    >
-                        Send message
-                    </Link>
+                <button className="ui button" type="button" onClick={() => setChatOpen(!chatOpen)}>
+                        {chatOpen ? 'View Profile' : 'Send message'}
                 </button>
             );
         }
     }
     
-
     return (
         <div>
 
             {renderProfileInfo(content.extraInfo)}
+     
+            {renderToggleButton(username)}
 
-            {renderMessageButton(userId)}
+            {(!chatOpen && !location.forChat) && renderPostsList(content.posts)}
 
-            {renderPostsList(content.posts)}
-
-            {renderNewPostButton(userId)}
+            {(!chatOpen && !location.forChat) && renderNewPostButton(username)}
+            
+            {!_.isEmpty(content.extraInfo) && (chatOpen || location.forChat) && <Chat receiver={content.extraInfo} />}
 
         </div>
     );

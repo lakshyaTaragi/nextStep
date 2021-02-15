@@ -22,7 +22,7 @@ const SignIn = (props) => {
                 if(location.state && location.state.username===response.user.username) {
                     history.push(location.state.address);
                 }else{
-                    history.push(`/profile/${formValues.username}`, {userId: response.user._id});
+                    history.push(`/profile/${formValues.username}`);
                 }
             } else {
                 // history.go(0);

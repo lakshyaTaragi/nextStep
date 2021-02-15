@@ -7,16 +7,18 @@ import { loadChat } from '../../../actions';
 const Chats = (props) => {
 
   const [chat, setChat] = useState([]);
-  const receiver = props.location.state;
+  // const receiver = props.location.state;
 
-  const {currentUser, loadChat, socket} = props;
+  const {currentUser, loadChat, socket,             //a.c.
+    receiver} = props;                              //parent
 
   const loadChatAndSet = () => {
     loadChat(currentUser._id, receiver._id)
     .then(response => {
-      console.log(response);
-      if(response.messages.length > 0){
-        setChat(response.messages);
+      // console.log(response);
+      const {messages} = response;
+      if(messages && messages.length > 0){
+        setChat(messages);
       } 
     });
   }
@@ -39,7 +41,8 @@ const Chats = (props) => {
         
         let areWe = message.sender===currentUser._id;
         
-        let classes = `list-group-item list-group-item-${areWe ?"info message-right":"light message-left"} rounded-pill d-inline-flex shadow-sm p-3 mb-2 rounded`;
+        let classes = 
+        `list-group-item list-group-item-${areWe ?"info message-right":"light message-left"} rounded-pill d-inline-flex shadow-sm p-3 mb-2 rounded`;
         
         let name = areWe?currentUser.username:receiver.username;
 
