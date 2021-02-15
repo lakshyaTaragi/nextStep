@@ -15,7 +15,7 @@ const ChatHead = ({ roomId }) => {
     const [unread, setUnread] = useState({});
     
     useEffect(() => {
-        unreadInfo(roomId)
+        // unreadInfo(roomId)
         // .then(res => setUnread(res));
     }, []);
 

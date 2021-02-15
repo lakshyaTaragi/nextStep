@@ -67,7 +67,7 @@ router.get('/chat/:userId/unreadInfo/:roomId', (req, res) => {
         if(err) throw err;
         const unread = _.countBy(room.messages, message => {
             return (!message.isRead && message.receiver===userId);
-        }).false; //! udefined for zero unread
+        }).true; //! udefined for zero unread
         const last = room.messages[room.messages.length-1].text;
         // console.log(last, unread);
         res.send({unread, last});        
