@@ -23,7 +23,7 @@ export const signUp = (formValues, isMentor) => async () => {
 
 export const signIn = (formValues) => async dispatch => {
     const response = await auth.post('/signin', formValues); 
-    const saveUser = {...response.data, user:_.omit(response.data.user,'chats','myPosts','password')};
+    const saveUser = {...response.data, user:_.omit(response.data.user,'chats','myPosts','password', 'chatRooms')};
     localStorage.setItem('currentUser',JSON.stringify(saveUser)); 
     dispatch({type:SIGN_IN, payload:saveUser});
     return response.data;  
@@ -159,10 +159,16 @@ export const unreadInfo = (roomId, userId) => async () => {
         return response.data;  
 };
 
-export const newChatRoom = (newRoom) => async (dispatch) => dispatch({
-        type: NEW_CHATROOM,
-        payload: newRoom
-    });
+// export const newChatRoom = (newRoom) => async (dispatch) => dispatch({
+//         type: NEW_CHATROOM,
+//         payload: newRoom
+//     });
+
+export const createChatList = (userId) => async () => {
+    const response = await users.get(`/allChats/${userId}`);
+    console.log(response.data);
+    return response.data;
+}
 
 
 

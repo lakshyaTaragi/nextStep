@@ -12,7 +12,7 @@ import SignIn from './forms/SignIn';
 import Post from './forms/PostForm';
 
 import history from '../history';
-import { signOut, saveSocket, newChatRoom } from '../actions';
+import { signOut, saveSocket } from '../actions';
 
 import ChatList from './screens/temporary-chat/ChatList';
 import Chat from './screens/temporary-chat/Chat';
@@ -21,7 +21,7 @@ import Chat from './screens/temporary-chat/Chat';
 const App = (props) => {
 
     
-    const { currentUser, socket, signOut, saveSocket, newChatRoom} = props;
+    const { currentUser, socket, signOut, saveSocket} = props;
     console.log(currentUser);
     
     if(currentUser && !socket){
@@ -29,7 +29,7 @@ const App = (props) => {
         const socketInst =  io('localhost:5000/'); //! ~localhost:5000/chat later
         var room;
         if(currentUser._id) room = currentUser._id.toString();
-        socketInst.on('connect', () => socketInst.emit('privateRoom',room));
+        socketInst.on('connect', () => socketInst.emit('privateRoom', room));
         // ? socketInst.emit('iAmOnline', currentUser)
 
         // socketInst.on('newRoom', (newRoom) => newChatRoom(newRoom));
@@ -103,7 +103,7 @@ const App = (props) => {
 
                 {authorizedRoute(Chat,'chat')}
 
-                <Route path="/allchats" exact component={ChatList} />
+                {authorizedRoute(ChatList,'allChats')}
 
 
             </Router>
@@ -125,7 +125,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
     signOut,
-    saveSocket,
-    newChatRoom
+    saveSocket
 })(App);
 

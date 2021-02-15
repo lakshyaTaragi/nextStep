@@ -85,6 +85,27 @@ router.get('/chat/:userId/unreadInfo/:roomId', (req, res) => {
 
 });
 
+// Get all chats to create ChatList
+router.get('/allChats/:userId', (req, res) => {
+    const {userId} = req.params;
+    User.findById(
+        userId,
+        'chatRooms'        
+    )
+    .populate({
+        path: 'chatRooms.person',
+        populate:{
+          path: 'profilePicture'
+        },
+        select: '-chatRooms -city -coaching -college -email -myPosts -password -school'
+    })
+    .exec((err, docs) => {
+        if(err) console.log(err);
+        else res.send(docs);
+    });
+});
+
+
 
 //Export router
 module.exports = router;

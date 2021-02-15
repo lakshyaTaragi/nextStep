@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { fetchUsersByIds, newChatRoom } from '../../../actions';
+import { fetchUsersByIds, createChatList } from '../../../actions';
 import ChatHead from '../../ChatHead';
 
 const ChatList = (props) => {
-    const {fetchUsersByIds, chatRooms, newChatRoom, socket} = props;
-    console.log(_.map(chatRooms, 'person'));
+    const {fetchUsersByIds, currentUserId, socket, createChatList} = props;
+    // console.log(_.map(chatRooms, 'person'));
     
     // useEffect(() => {
         
     // },[]);
-
+    createChatList(currentUserId);
     return (
 
         <div>Chat List</div>
@@ -23,11 +23,11 @@ const ChatList = (props) => {
 
 
 const mapStateToProps = state => ({
-    chatRooms: state.auth.currentUser.chatRooms,
-    socket: state.auth.socket
+    socket: state.auth.socket,
+    currentUserId: state.auth.currentUser._id
 });
 
 export default connect(mapStateToProps, {
     fetchUsersByIds,
-    newChatRoom
+    createChatList
 })(ChatList);
