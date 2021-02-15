@@ -1,22 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
+import { loadChat, unreadInfo } from '../../../actions';
 import MessageForm from './MessageForm';
-import { loadChat } from '../../../actions';
+import ChatHead from '../../ChatHead';
 
 const Chats = (props) => {
 
   const [chat, setChat] = useState([]);
+  const [roomId, setRoomId] = useState('');
   const receiver = props.location.state;
 
-  const {currentUser, loadChat, socket} = props;
+  const {currentUser, loadChat, socket, unreadInfo} = props;
 
   const loadChatAndSet = () => {
     loadChat(currentUser._id, receiver._id)
     .then(response => {
       console.log(response);
-      if(response.messages.length > 0){
+      if(response.messages.length > 0) {
         setChat(response.messages);
+        // setRoomId(response._id);
+        unreadInfo(response._id).then(res => console.log(res));
       } 
     });
   }
@@ -43,7 +47,7 @@ const Chats = (props) => {
         // if(!message.isRead) unreadMessagesStart = true; //! some special appearance to unread messages
         return (
           <div>
-            {!message.isRead ? <hr/> : null}
+            {!message.isRead && !areWe ? <hr/> : null}
             <li className={classes} key={message._id}>
               <div><b>{name}  {message.time}</b> <br/>{message.text}</div>
             </li>
@@ -56,7 +60,7 @@ const Chats = (props) => {
 
       return (
         <div className="list-group-item list-group-item-danger">
-          Start talking with {receiver.username}
+          Start talking with {receiver.name}
         </div>
       );
 
@@ -88,6 +92,8 @@ const Chats = (props) => {
           {renderChat(chat)}
         </ul>
 
+        <ChatHead roomId={roomId}/>
+
       </main>
 
       <MessageForm receiverId={receiver._id}/>
@@ -103,5 +109,5 @@ const mapStateToProps = state => ({
   socket: state.auth.socket
 });
 
-export default connect(mapStateToProps, { loadChat })(Chats);
+export default connect(mapStateToProps, { loadChat, unreadInfo })(Chats);
 

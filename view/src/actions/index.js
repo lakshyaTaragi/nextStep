@@ -143,16 +143,23 @@ export const fetchComments = (comments_ids) => async () => {
 // *****************************************************************************
 //! CHAT RELATED ACTIONS
 
+export const loadChat = (senderId, receiverId) => async () => {
+    const response = await users.get(`/chat/loadChat/${senderId}/${receiverId}`);
+    return response.data; 
+};
+
 export const sendChat = (formValues, senderId, receiverId, socket) => async () => {
     const time = moment().format('h:mm a');
     socket.emit('newMessage', formValues.message, senderId, receiverId, time);
 };
 
-
-export const loadChat = (senderId, receiverId) => async () => {
-    const response = await users.get(`/chat/loadChat/${senderId}/${receiverId}`);
-    return response.data; 
+export const unreadInfo = (roomId, userId) => async () => {
+        console.log('calling unreadInfo');
+        const response = await users.get(`/chat/${userId}/unreadInfo/${roomId}`);
+        return response.data;
+    
 };
+
 
 
 

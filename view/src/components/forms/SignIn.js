@@ -9,13 +9,11 @@ import { signIn } from '../../actions';
 const SignIn = (props) => {
 
     let history = useHistory();
-
-    
+  
     const { handleSubmit, pristine, reset, submitting, signIn } = props;
     const { location } = props.history;
 
-    useEffect(()=>{reset()},[]);
-    console.log(props.history);
+    useEffect(() => {reset()}, []);
 
     const onSubmit = formValues => {
         signIn(formValues)
@@ -27,7 +25,8 @@ const SignIn = (props) => {
                     history.push(`/profile/${formValues.username}`, {userId: response.user._id});
                 }
             } else {
-                history.go(0);
+                // history.go(0);
+                reset();
             }
         });
     };
