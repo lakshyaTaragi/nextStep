@@ -69,12 +69,14 @@ router.get('/chat/loadChat/:senderId/:receiverId', (req, res) => {
 });
 
 
+
+
 // Get unread messages info
 router.get('/chat/:userId/unreadInfo/:roomId', (req, res) => {
     const { userId, roomId } = req.params;
     ChatRoom.findById(roomId, (err, room) => {
         if(err) throw err;
-        // console.log(roomId);
+        console.log(room);
         var unread = 0;
         room.messages.map(message => {
             // console.log(message, userId);
@@ -97,7 +99,7 @@ router.get('/allChats/:userId', (req, res) => {
     const {userId} = req.params;
     User.findById(
         userId, 
-               
+        'chatRooms'
     )
     // .populate({
     //     path: 'chatRooms',
@@ -113,13 +115,23 @@ router.get('/allChats/:userId', (req, res) => {
         // }
     // })
     .populate({
-        path: 'chatRooms.memebers',
-        select: '-chatRooms -city -coaching -college -email -myPosts -password -school'        
+        path: 'chatRooms',
+        populate:{
+           path: 'members',
+           match: {_id: {$ne: userId}},
+           populate: {
+               path: 'profilePicture',
+               match: {profilePicture: {$ne:''}}
+           },
+           select: '-chatRooms -city -coaching -college -email -myPosts -password -school'
+        },
+        select: '-messages'
+        // select: '-chatRooms -city -coaching -college -email -myPosts -password -school'        
     })
     .exec((err, docs) => {
         if(err) console.log(err);
-        console.log(docs);
-        res.json(docs);
+        // console.log(docs);
+        res.send(docs);
     });
 });
 

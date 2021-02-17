@@ -23,12 +23,12 @@ const Chats = (props) => {
         setChat([]);
       }
     });
-    createChatList(currentUser._id);
+    // createChatList(currentUser._id);
   }
   
   useEffect(() => {
     loadChatAndSet();    
-    socket.on('loadChat', loadChatAndSet);
+    socket.on('loadChat', (newMessage) => setChat(old => [...old, newMessage]));
     return () => {
       socket.removeListener('loadChat', loadChatAndSet);
     };
