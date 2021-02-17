@@ -154,9 +154,10 @@ export const sendChat = (formValues, senderId, receiverId, socket) => async () =
 };
 
 export const unreadInfo = (roomId, userId) => async () => {
-        console.log('calling unreadInfo');
-        const response = await users.get(`/chat/${userId}/unreadInfo/${roomId}`);
-        return response.data;  
+    // console.log('calling unreadInfo');
+    const response = await users.get(`/chat/${userId}/unreadInfo/${roomId}`);
+    // console.log(response.data);
+    return response.data;  
 };
 
 // export const newChatRoom = (newRoom) => async (dispatch) => dispatch({
@@ -167,7 +168,7 @@ export const unreadInfo = (roomId, userId) => async () => {
 export const createChatList = (userId) => async () => {
     const response = await users.get(`/allChats/${userId}`);
     console.log(response.data);
-    return response.data;
+    // return _.reverse(response.data.chatRooms);
 }
 
 

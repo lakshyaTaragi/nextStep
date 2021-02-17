@@ -5,11 +5,14 @@ import { unreadInfo } from '../actions';
 import UserTag from './UserTag';
 
 
-const ChatHead = ({ currentUserId, roomId, personInfo }) => {
+const ChatHead = (props) => {
     
     const [unread, setUnread] = useState({});
+    const { currentUserId, roomId, personInfo, unreadInfo } = props;
     const { name, username, isMentor } = personInfo;
+   
 
+   
     useEffect(() => {
         unreadInfo(roomId, currentUserId)
         .then(res => setUnread(res));
@@ -30,11 +33,17 @@ const ChatHead = ({ currentUserId, roomId, personInfo }) => {
             />
             {
                 unread && 
-                <div class="ui compact message">
-                    <p>{unread.last}</p>
+                <div className="ui message">
+                    {unread.unread>0 ?
+                    <h5 className="ui header">
+                        {unread.unread>0?unread.last:''}
+                    </h5>:<div>{unread.last}</div>
+                    }
+                    
+                        
                     {
-                        unread.unread && 
-                        <a class="ui red circular label">{unread.unread}</a>
+                        unread.unread>0 && 
+                        <a className="ui red circular label">{unread.unread} new message{unread.unread>1?'s':''}</a>
                     }                    
                 </div>
             }

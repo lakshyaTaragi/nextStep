@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import MessageForm from './MessageForm';
-import { loadChat } from '../../../actions';
+import { loadChat, createChatList } from '../../../actions';
 
 const Chats = (props) => {
 
-  const [chat, setChat] = useState([]);
+  const [chat, setChat] = useState(false);
   // const receiver = props.location.state;
 
   const {currentUser, loadChat, socket,             //a.c.
-    receiver} = props;                              //parent
+    receiver, createChatList} = props;                              //parent
 
   const loadChatAndSet = () => {
     loadChat(currentUser._id, receiver._id)
@@ -19,8 +19,11 @@ const Chats = (props) => {
       const {messages} = response;
       if(messages && messages.length > 0){
         setChat(messages);
-      } 
+      }else{
+        setChat([]);
+      }
     });
+    createChatList(currentUser._id);
   }
   
   useEffect(() => {
@@ -30,6 +33,7 @@ const Chats = (props) => {
       socket.removeListener('loadChat', loadChatAndSet);
     };
   }, []);
+  console.log(chat);
 
   const renderChat = (chat) => {
 
@@ -42,7 +46,7 @@ const Chats = (props) => {
         let areWe = message.sender===currentUser._id;
         
         let classes = 
-        `list-group-item list-group-item-${areWe ?"info message-right":"light message-left"} rounded-pill d-inline-flex shadow-sm p-3 mb-2 rounded`;
+        `ui compact ${areWe ?"blue":""} message  rounded-pill d-inline-flex shadow-sm p-3 mb-2 rounded`;
         
         let name = areWe?currentUser.username:receiver.username;
 
@@ -66,7 +70,7 @@ const Chats = (props) => {
         </div>
       );
 
-    } else {
+    }else if (!chat) {
 
       return (
         <div class="ui segment">
@@ -109,4 +113,4 @@ const mapStateToProps = state => ({
   socket: state.auth.socket
 });
 
-export default connect(mapStateToProps, { loadChat })(Chats);
+export default connect(mapStateToProps, { loadChat, createChatList })(Chats);

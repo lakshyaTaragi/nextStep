@@ -72,12 +72,19 @@ router.get('/chat/loadChat/:senderId/:receiverId', (req, res) => {
 // Get unread messages info
 router.get('/chat/:userId/unreadInfo/:roomId', (req, res) => {
     const { userId, roomId } = req.params;
-    // console.log(roomId);
     ChatRoom.findById(roomId, (err, room) => {
         if(err) throw err;
-        const unread = _.countBy(room.messages, message => {
-            return (!message.isRead && message.receiver===userId);
-        }).true; //! udefined for zero unread
+        // console.log(roomId);
+        var unread = 0;
+        room.messages.map(message => {
+            // console.log(message, userId);
+            // console.log(!message.isRead, message.receiver==userId);
+            if((!message.isRead && message.receiver==userId)) unread = unread+1;
+        });
+        // console.log(unread);
+        // const unread = _.countBy(room.messages, message => {
+        //     return (!message.isRead && message.receiver===userId);
+        // }); // .false gives count of unread messages 
         const last = room.messages[room.messages.length-1].text;
         // console.log(last, unread);
         res.send({unread, last});        
@@ -89,19 +96,30 @@ router.get('/chat/:userId/unreadInfo/:roomId', (req, res) => {
 router.get('/allChats/:userId', (req, res) => {
     const {userId} = req.params;
     User.findById(
-        userId,
-        'chatRooms'        
+        userId, 
+               
     )
+    // .populate({
+    //     path: 'chatRooms',
+        // populate: {
+        //     path: 'members',
+            // match: {$ne: userId},
+            // populate:{
+            //   path: 'profilePicture',
+            //   match: {profilePicture: {$ne:''}}
+            // },
+            // select: '-chatRooms -city -coaching -college -email -myPosts -password -school'
+
+        // }
+    // })
     .populate({
-        path: 'chatRooms.person',
-        populate:{
-          path: 'profilePicture'
-        },
-        select: '-chatRooms -city -coaching -college -email -myPosts -password -school'
+        path: 'chatRooms.memebers',
+        select: '-chatRooms -city -coaching -college -email -myPosts -password -school'        
     })
     .exec((err, docs) => {
         if(err) console.log(err);
-        else res.send(docs);
+        console.log(docs);
+        res.json(docs);
     });
 });
 
