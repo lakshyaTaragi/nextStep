@@ -8,7 +8,7 @@ import UserTag from './UserTag';
 const ChatHead = (props) => {
     
     const [unread, setUnread] = useState({});
-    const { currentUserId, roomId, personInfo, unreadInfo } = props;
+    const { currentUserId, roomId, personInfo, unreadInfo, socket } = props;
     const { name, username, isMentor } = personInfo;
    
 
@@ -16,6 +16,10 @@ const ChatHead = (props) => {
     useEffect(() => {
         unreadInfo(roomId, currentUserId)
         .then(res => setUnread(res));
+
+        //! PROBABLY WONT BE NEEDED
+        // socket.on('loadChat') receive chat id if it matches then refetch
+        
     }, []);
 
     return (
@@ -51,7 +55,10 @@ const ChatHead = (props) => {
     );
 }
 
-const mapStateToProps = state => ({currentUserId:state.auth.currentUser._id});
+const mapStateToProps = state => ({
+    currentUserId:state.auth.currentUser._id,
+    socket: state.auth.socket
+});
 
 export default connect(mapStateToProps, {
     unreadInfo

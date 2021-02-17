@@ -15,11 +15,27 @@ const ChatList = (props) => {
     useEffect(() => {
         createChatList(currentUserId)
         .then(res => {
-            console.log(res);
+            // console.log(res);
             setChatInfo(res)
-        });        
+        }); 
+
+        socket.on('loadChat', (newMessage, roomId) => {
+            setChatInfo((old) => {
+                const x = _.find(old, { '_id': roomId });
+                const chat = _.pullAllBy(old, [{'_id':roomId}], '_id');
+                // conso
+                setChatInfo([x,...chat]);
+            });
+        });
+        // receive chat id --> find it in chat and change its order
+
+
+        // return () => 
+        
+        
     },[]);
 
+    
     const renderChatList = (chatInfo) => {
         if(chatInfo && chatInfo.length>0){
             return chatInfo.map(chat => {
@@ -27,6 +43,14 @@ const ChatList = (props) => {
                 const {name, username, isMentor, profilePicture, _id} = chat.members[0];
                 console.log(chat._id);
                 // console.log({name, username, isMentor});
+                // console.log();
+
+
+                // var array = [{ 'x': 1 }, { 'x': 2 }, { 'x': 3 }, { 'x': 1 }];
+ 
+                // _.pullAllBy(array, [{ 'x': 1 }, { 'x': 3 }], 'x');
+                // console.log(array);
+
 
                 return (
                     <React.Fragment key={_id}>
