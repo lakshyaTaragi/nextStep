@@ -148,6 +148,11 @@ export const loadChat = (senderId, receiverId) => async () => {
     return response.data; 
 };
 
+export const setRead = (senderId, receiverId) => async () => {
+    // console.log("setREad called");
+    await users.get(`/chat/setRead/${senderId}/${receiverId}`);
+};
+
 export const sendChat = (formValues, senderId, receiverId, socket) => async () => {
     const time = moment().format('h:mm a');
     socket.emit('newMessage', formValues.message, senderId, receiverId, time);
