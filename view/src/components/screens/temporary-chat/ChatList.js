@@ -19,51 +19,50 @@ const ChatList = (props) => {
             setChatInfo(res)
         }); 
 
-        socket.on('loadChat', (newMessage, roomId) => {
-            setChatInfo((old) => {
-                const x = _.find(old, { '_id': roomId });
-                const chat = _.pullAllBy(old, [{'_id':roomId}], '_id');
-                // conso
-                setChatInfo([x,...chat]);
-            });
-        });
-        // receive chat id --> find it in chat and change its order
+        // socket.on('loadChat', (newMessage, roomId) => {
+        //     // setChatInfo((old) => {
+        //     //     const x = _.find(old, { '_id': roomId });
+        //     //     const chat = _.pullAllBy(old, [{'_id':roomId}], '_id');
+        //     //     // conso
+        //     //     setChatInfo([x,...chat]);
+        //     // });
+        // });
+        // // receive chat id --> find it in chat and change its order
 
 
-        // return () => 
+        // return () => socket.removeListener('loadChat');
         
         
     },[]);
+
+    console.log(chatInfo);
 
     
     const renderChatList = (chatInfo) => {
         if(chatInfo && chatInfo.length>0){
             return chatInfo.map(chat => {
                 // chat destructuring
-                const {name, username, isMentor, profilePicture, _id} = chat.members[0];
-                console.log(chat._id);
-                // console.log({name, username, isMentor});
-                // console.log();
-
-
-                // var array = [{ 'x': 1 }, { 'x': 2 }, { 'x': 3 }, { 'x': 1 }];
- 
-                // _.pullAllBy(array, [{ 'x': 1 }, { 'x': 3 }], 'x');
-                // console.log(array);
-
-
-                return (
-                    <React.Fragment key={_id}>
-                        <div className="item">
-                        <a className="ui tiny image">
-                            {profilePicture ? renderImageFromDB(profilePicture, "") : defaultpic}
-                        </a>
-                        <div className="content">
-                            <ChatHead roomId={chat._id} personInfo={{name, username, isMentor}} />
-                        </div>
-                        </div>
-                    </React.Fragment>
-                );
+                if(chat){
+                    const {name, username, isMentor, profilePicture, _id} = chat.members[0];
+                    console.log(chat._id);    
+    
+                    return (
+                        <React.Fragment key={_id}>
+                            <div className="item">
+                            <a className="ui tiny image">
+                                {profilePicture ? renderImageFromDB(profilePicture, "") : defaultpic}
+                            </a>
+                            <div className="content">
+                                <ChatHead 
+                                    roomId={chat._id} 
+                                    personInfo={{name, username, isMentor}} 
+                                    setChatInfo={setChatInfo}
+                                />
+                            </div>
+                            </div>
+                        </React.Fragment>
+                    );
+                }
             })
         } else {
             return <div className="ui message red">No current chats</div>

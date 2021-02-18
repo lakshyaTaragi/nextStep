@@ -167,7 +167,7 @@ export const unreadInfo = (roomId, userId) => async () => {
 
 export const createChatList = (userId) => async () => {
     const response = await users.get(`/allChats/${userId}`);
-    console.log(response.data);
+    // console.log(response.data);
     return _.reverse(response.data.chatRooms);
 }
 

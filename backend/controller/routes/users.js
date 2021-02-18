@@ -45,7 +45,7 @@ router.post('/getUsers', (req, res) => {
         {_id: { $in: userIds}},
         (err, users) => {
             if(err) throw err;
-            console.log(users);
+            // console.log(users);
         }
     );
 });
@@ -76,7 +76,7 @@ router.get('/chat/:userId/unreadInfo/:roomId', (req, res) => {
     const { userId, roomId } = req.params;
     ChatRoom.findById(roomId, (err, room) => {
         if(err) throw err;
-        console.log(room);
+        // console.log(room);
         var unread = 0;
         room.messages.map(message => {
             // console.log(message, userId);

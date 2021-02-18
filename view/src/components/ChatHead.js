@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import { unreadInfo } from '../actions';
 import UserTag from './UserTag';
@@ -8,7 +9,7 @@ import UserTag from './UserTag';
 const ChatHead = (props) => {
     
     const [unread, setUnread] = useState({});
-    const { currentUserId, roomId, personInfo, unreadInfo, socket } = props;
+    const { currentUserId, roomId, personInfo, unreadInfo, socket, setChatInfo } = props;
     const { name, username, isMentor } = personInfo;
    
 
@@ -17,9 +18,31 @@ const ChatHead = (props) => {
         unreadInfo(roomId, currentUserId)
         .then(res => setUnread(res));
 
-        //! PROBABLY WONT BE NEEDED
-        // socket.on('loadChat') receive chat id if it matches then refetch
-        
+        socket.on('loadChat', (newMessage, id) => {
+            if(id==roomId){
+                unreadInfo(roomId, currentUserId)
+                .then(res => {
+                    setChatInfo((old) => 
+                        [_.find(old, { '_id': id }),..._.pullAllBy(old, [{'_id':id}], '_id')]
+                    );
+                    setUnread(res);
+                });
+            }
+        });
+        // receive chat id --> find it in chat and change its order
+
+
+        return () => socket.removeListener('loadChat');
+
+        // //! PROBABLY WONT BE NEEDED
+        // socket.on('loadChat', (newMessage, id) => {
+        //     if(id==roomId){
+        //         unreadInfo(roomId, currentUserId)
+        //         .then(res => setUnread(res));
+        //     }
+        // }); 
+        // // receive chat id if it matches then refetch
+        // return () => socket.removeListener('loadChat');        
     }, []);
 
     return (

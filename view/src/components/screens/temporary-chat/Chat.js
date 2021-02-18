@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import MessageForm from './MessageForm';
-import { loadChat, createChatList } from '../../../actions';
+import { loadChat } from '../../../actions';
 
 const Chats = (props) => {
 
   const [chat, setChat] = useState(false);
-  // const receiver = props.location.state;
 
   const {currentUser, loadChat, socket,             //a.c.
-    receiver, createChatList} = props;                              //parent
+    receiver} = props;                              //parent
 
   const loadChatAndSet = () => {
     loadChat(currentUser._id, receiver._id)
     .then(response => {
-      // console.log(response);
+      console.log("asdas");
       const {messages} = response;
       if(messages && messages.length > 0){
         setChat(messages);
@@ -23,17 +23,20 @@ const Chats = (props) => {
         setChat([]);
       }
     });
-    // createChatList(currentUser._id);
   }
+
+  // const addNewMessage = (newMessage) => setChat(old => [...old, newMessage]);
+
+  
   
   useEffect(() => {
     loadChatAndSet();    
-    socket.on('loadChat', (newMessage) => setChat(old => [...old, newMessage]));
+    socket.on('loadChat', (newMessage) => setChat(old => [..._.forEach(old, msg => { return {...msg, isRead: true}}), newMessage]));
     return () => {
-      socket.removeListener('loadChat', loadChatAndSet);
+      socket.removeListener('loadChat', setChat);
     };
   }, []);
-  console.log(chat);
+  // console.log(chat);
 
   const renderChat = (chat) => {
 
@@ -52,7 +55,7 @@ const Chats = (props) => {
 
         // if(!message.isRead) unreadMessagesStart = true; //! some special appearance to unread messages
         return (
-          <div>
+          <div key={message._id}>
             {!message.isRead && !areWe ? <hr/> : null}
             <li className={classes} key={message._id}>
               <div><b>{name}  {message.time}</b> <br/>{message.text}</div>
@@ -113,4 +116,4 @@ const mapStateToProps = state => ({
   socket: state.auth.socket
 });
 
-export default connect(mapStateToProps, { loadChat, createChatList })(Chats);
+export default connect(mapStateToProps, { loadChat })(Chats);
