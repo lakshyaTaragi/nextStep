@@ -7,7 +7,7 @@ import ChatHead from '../../ChatHead';
 import defaultpic from '../defaultpic.jpg';
 
 const ChatList = (props) => {
-    const { currentUserId, socket, createChatList, renderImageFromDB} = props;
+    const { currentUserId, createChatList, renderImageFromDB} = props;
     
     const [chatInfo, setChatInfo] = useState(false);
 
@@ -15,8 +15,6 @@ const ChatList = (props) => {
         createChatList(currentUserId)
         .then(res => setChatInfo(res));    
     },[]);
-
-    console.log(chatInfo);
 
     
     const renderChatList = (chatInfo) => {
@@ -62,7 +60,6 @@ const ChatList = (props) => {
 
 
 const mapStateToProps = state => ({
-    socket: state.auth.socket,
     currentUserId: state.auth.currentUser._id
 });
 

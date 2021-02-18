@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { unreadInfo } from '../actions';
+import { unreadInfo, createChatList } from '../actions';
 import UserTag from './UserTag';
 
 
 const ChatHead = (props) => {
     
     const [unread, setUnread] = useState({});
-    const { currentUserId, roomId, personInfo, unreadInfo, socket, setChatInfo } = props;
+    const { currentUserId, socket,                      //state
+        createChatList, unreadInfo,                     //a.c.
+        roomId, personInfo, setChatInfo } = props;      //parent
     const { name, username, isMentor } = personInfo;
    
 
@@ -18,8 +20,11 @@ const ChatHead = (props) => {
         unreadInfo(roomId, currentUserId)
         .then(res => setUnread(res));
 
-        socket.on('loadChat', (newMessage, id) => {
-            if(id==roomId){
+        socket.on('loadChat', (newMessage, id, isNewRoom) => {
+            if(isNewRoom){
+                createChatList(currentUserId)
+                .then(res => setChatInfo(res));
+            } else if(id==roomId){
                 unreadInfo(roomId, currentUserId)
                 .then(res => {
                     setChatInfo((old) => 
@@ -29,20 +34,7 @@ const ChatHead = (props) => {
                 });
             }
         });
-        // receive chat id --> find it in chat and change its order
-
-
-        return () => socket.removeListener('loadChat');
-
-        // //! PROBABLY WONT BE NEEDED
-        // socket.on('loadChat', (newMessage, id) => {
-        //     if(id==roomId){
-        //         unreadInfo(roomId, currentUserId)
-        //         .then(res => setUnread(res));
-        //     }
-        // }); 
-        // // receive chat id if it matches then refetch
-        // return () => socket.removeListener('loadChat');        
+       return () => socket.removeListener('loadChat');       
     }, []);
 
     return (
@@ -84,6 +76,7 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, {
-    unreadInfo
+    unreadInfo, 
+    createChatList
 })(ChatHead);
 

@@ -154,7 +154,7 @@ io.on('connection', socket => {
                 (err) => {
                   if(err) console.log(err); 
                   console.log("room pushed for both");
-                  io.to(receiverId).to(senderId).emit('loadChat', newMessage, createdRoom._id);
+                  io.to(receiverId).to(senderId).emit('loadChat', newMessage, createdRoom._id, true);
                 }
               ); 
             });
