@@ -13,16 +13,21 @@ const Chats = (props) => {
     receiver} = props;                              //parent
 
   const loadChatAndSet = () => {
+    let mounted = true;
     loadChat(currentUser._id, receiver._id)
     .then(response => {
       console.log("asdas");
       const {messages} = response;
-      if(messages && messages.length > 0){
-        setChat(messages);
-      }else{
-        setChat([]);
+      if(mounted) {
+        if(messages && messages.length > 0){
+          setChat(messages);
+        }else{
+          setChat([]);
+        }
       }
     });
+
+    return () => mounted = false;
   }
 
   // const addNewMessage = (newMessage) => setChat(old => [...old, newMessage]);
