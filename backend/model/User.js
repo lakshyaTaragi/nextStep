@@ -62,13 +62,8 @@ const UserSchema = new Schema({
     }],
 
     chatRooms:[{
-<<<<<<< HEAD
-        type: ObjectId,
-        ref: 'User'
-=======
         type:ObjectId,
         ref:'ChatRoom'
->>>>>>> chatRoom1
     }]
 
 });
