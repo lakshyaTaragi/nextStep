@@ -1,34 +1,64 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import MessageForm from './MessageForm';
-import { loadChat } from '../../../actions';
+import { loadChat, setRead } from '../../../actions';
 
 const Chats = (props) => {
 
-  const [chat, setChat] = useState([]);
-  // const receiver = props.location.state;
+  const [chat, setChat] = useState(false);
 
-  const {currentUser, loadChat, socket,             //a.c.
+  const {currentUser, loadChat, socket, setRead,    //a.c.
     receiver} = props;                              //parent
 
-  const loadChatAndSet = () => {
+  const loadChatAndSet = (mounted) => {
+    
     loadChat(currentUser._id, receiver._id)
     .then(response => {
-      // console.log(response);
+      setRead(currentUser._id, receiver._id);
       const {messages} = response;
-      if(messages && messages.length > 0){
-        setChat(messages);
-      } 
+      if(mounted) {
+        if(messages && messages.length > 0){
+          setChat(messages);
+        }else{
+          setChat([]);
+        }
+      }
+
     });
-  }
+
+  } 
   
   useEffect(() => {
-    loadChatAndSet();    
-    socket.on('loadChat', loadChatAndSet);
+    
+    let mounted = true;
+    
+    loadChatAndSet(mounted);
+
+    socket.on('loadChat', (newMessage) => 
+    setChat(old => {
+      var i=true, x=old.length-1;
+      while(i && x>=0){
+        if(!old[x].isRead && old[x].receiver==currentUser._id){
+          old[x] = {...old[x], isRead: true};
+          x--;
+        }else{
+          i=false;
+        }
+      }
+      setRead(currentUser._id, receiver._id);
+      return [
+        ...old, 
+        newMessage
+      ];
+    }));
+    
     return () => {
-      socket.removeListener('loadChat', loadChatAndSet);
+      mounted = false;
+      socket.removeListener('loadChat', setChat);
     };
+
   }, []);
 
   const renderChat = (chat) => {
@@ -42,15 +72,15 @@ const Chats = (props) => {
         let areWe = message.sender===currentUser._id;
         
         let classes = 
-        `list-group-item list-group-item-${areWe ?"info message-right":"light message-left"} rounded-pill d-inline-flex shadow-sm p-3 mb-2 rounded`;
+        `ui compact ${areWe ?"blue":""} message  rounded-pill d-inline-flex shadow-sm p-3 mb-2 rounded`;
         
         let name = areWe?currentUser.username:receiver.username;
 
         // if(!message.isRead) unreadMessagesStart = true; //! some special appearance to unread messages
         return (
-          <div>
+          <div key={message._id} >
             {!message.isRead && !areWe ? <hr/> : null}
-            <li className={classes} key={message._id}>
+            <li className={classes}>
               <div><b>{name}  {message.time}</b> <br/>{message.text}</div>
             </li>
           </div>       
@@ -66,11 +96,11 @@ const Chats = (props) => {
         </div>
       );
 
-    } else {
+    }else if (!chat) {
 
       return (
-        <div class="ui segment">
-          <div class="ui active centered inline loader"></div>
+        <div className="ui segment">
+          <div className="ui active centered inline loader"></div>
           <p></p>
         </div>
       );
@@ -109,4 +139,7 @@ const mapStateToProps = state => ({
   socket: state.auth.socket
 });
 
-export default connect(mapStateToProps, { loadChat })(Chats);
+export default connect(mapStateToProps, {
+  loadChat, 
+  setRead
+})(Chats);

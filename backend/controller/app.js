@@ -104,6 +104,7 @@ io.on('connection', socket => {
                 if(err) console.log(err);
                 console.log("message pushed to room");
                 
+               
                 // Update postition of room in both sender and receivers lists
                 User.updateMany(
                   {_id: { '$in': [ senderId, receiverId] } },
@@ -113,19 +114,20 @@ io.on('connection', socket => {
                     if(err) console.log(err);
                     else console.log('room removed');
                   }
-                );
+                ).then(() => {
+                  User.updateMany(
+                    {_id: { $in: [ senderId, receiverId] } },      
+                    { '$push': { chatRooms: chatRoom._id } },                      
+                    {multi: true},
+                    (err) => {
+                      if(err) console.log(err);
+                      else console.log('room added to end');
+                      io.to(receiverId).to(senderId).emit('loadChat', newMessage, chatRoom._id);
+                    }
+                  )
+                  
+                });
 
-                User.updateMany(
-                  {_id: { $in: [ senderId, receiverId] } },      
-                  { '$push': { chatRooms: chatRoom } },                      
-                  {multi: true},
-                  (err) => {
-                    if(err) console.log(err);
-                    else console.log('room added to start');
-                  }
-                );
-
-                io.to(receiverId).to(senderId).emit('loadChat');
 
             });
 
@@ -145,42 +147,16 @@ io.on('connection', socket => {
               console.log("new room created");
               
               // add this chatroom to both people's lists
-
-               // in sender's
-               const newSenderRoom = {
-                person: receiverId,
-                chatRoom: createdRoom._id
-              };
-              User.findByIdAndUpdate(
-                senderId,
-                { $push: {
-                    chatRooms: newSenderRoom
-                  }
-                },
+              User.updateMany(
+                {_id: { $in: [ senderId, receiverId] } },
+                { '$push': { chatRooms: createdRoom } }, 
+                {multi: true},
                 (err) => {
-                  if(err) throw err; 
-                  console.log("room pushed for sender");
-                  // io.to(senderId).emit('newRoom', newSenderRoom);
+                  if(err) console.log(err); 
+                  console.log("room pushed for both");
+                  io.to(receiverId).to(senderId).emit('loadChat', newMessage, createdRoom._id, true);
                 }
-              );
-
-              // in receiver's
-              const newReceiverRoom =  {
-                person: senderId,
-                chatRoom: createdRoom._id
-              };
-              User.findByIdAndUpdate(
-                receiverId,
-                { $push: {
-                    chatRooms: newReceiverRoom
-                  }
-                },
-                (err) => {
-                  if(err) throw err; 
-                  console.log("room pushed for receiver");
-                  io.to(receiverId).to(senderId).emit('loadChat');
-                }
-              );
+              ); 
             });
           };
         }

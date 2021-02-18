@@ -38,8 +38,8 @@ const Post = (props) => {
         <div className="card ui raised segment" style={{width: "18rem"}} >
             <div className="card-body ui placeholder">    
                 <div className="post content">
-                    <h5 className="card-title"><div className="line"></div></h5>                   
-                    <p className="card-text"><div className="line"></div></p>
+                    <h5 className="card-title line"></h5>                   
+                    <p className="card-text line"></p>
                 </div>
                 <div className="btn-group" role="group" aria-label="Basic mixed styles example">
                 <div className="line"></div><div className="line"></div>
@@ -62,7 +62,7 @@ const Post = (props) => {
 
     if(!_.isEmpty(post)){
         return (
-            <div className="card ui raised segment" style={{width: "18rem"}} key={postId}>
+            <div className="card ui raised segment" style={{width: "18rem"}}>
                 <div className="card-body">
 
                         <UserTag 

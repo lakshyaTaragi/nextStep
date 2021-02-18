@@ -45,7 +45,7 @@ router.post('/getUsers', (req, res) => {
         {_id: { $in: userIds}},
         (err, users) => {
             if(err) throw err;
-            console.log(users);
+            // console.log(users);
         }
     );
 });
@@ -55,53 +55,70 @@ router.post('/getUsers', (req, res) => {
 // Load chat and change read-status of messages
 router.get('/chat/loadChat/:senderId/:receiverId', (req, res) => {
     const {senderId, receiverId} = req.params;
-    // console.log('loadChat')
-    ChatRoom.findOneAndUpdate(
+    ChatRoom.findOne(
         { members: { $all: [senderId, receiverId] } },        
-        {  $set: {'messages.$[message].isRead': true} },
-        { arrayFilters: [{ 'message.receiver': senderId }] },
         (err, result) => {
             if(err) throw err;
-            // console.log(result);
             res.send(result);
         }
     );
 });
 
+// Load chat and change read-status of messages
+router.get('/chat/setRead/:senderId/:receiverId', (req) => {
+    const {senderId, receiverId} = req.params;
+    // console.log('setread');
+    ChatRoom.findOneAndUpdate(
+        { members: { $all: [senderId, receiverId] } },        
+        {  $set: {'messages.$[message].isRead': true} },
+        { arrayFilters: [{ 'message.receiver': senderId }] },
+        (err) => { if(err) throw err;}
+    );
+});
+
+
 
 // Get unread messages info
 router.get('/chat/:userId/unreadInfo/:roomId', (req, res) => {
     const { userId, roomId } = req.params;
-    // console.log(roomId);
     ChatRoom.findById(roomId, (err, room) => {
         if(err) throw err;
-        const unread = _.countBy(room.messages, message => {
-            return (!message.isRead && message.receiver===userId);
-        }).true; //! udefined for zero unread
+        // console.log(room);
+        var unread = 0;
+        room.messages.map(message => {
+            if((!message.isRead && message.receiver==userId)) unread = unread+1;
+        });
         const last = room.messages[room.messages.length-1].text;
         // console.log(last, unread);
         res.send({unread, last});        
     });
-
 });
+
 
 // Get all chats to create ChatList
 router.get('/allChats/:userId', (req, res) => {
     const {userId} = req.params;
     User.findById(
-        userId,
-        'chatRooms'        
+        userId, 
+        'chatRooms'
     )
     .populate({
-        path: 'chatRooms.person',
+        path: 'chatRooms',
         populate:{
-          path: 'profilePicture'
+           path: 'members',
+           match: {_id: {$ne: userId}},
+           populate: {
+               path: 'profilePicture',
+               match: {profilePicture: {$ne:''}}
+           },
+           select: '-chatRooms -city -coaching -college -email -myPosts -password -school'
         },
-        select: '-chatRooms -city -coaching -college -email -myPosts -password -school'
+        select: '-messages'     
     })
     .exec((err, docs) => {
         if(err) console.log(err);
-        else res.send(docs);
+        // console.log(docs);
+        res.send(docs);
     });
 });
 

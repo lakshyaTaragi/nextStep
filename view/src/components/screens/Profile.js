@@ -35,7 +35,7 @@ const Profile = (props) => {
 
     const renderPostsList = (myPosts) => {
         return myPosts.map(post => {
-            return <Post postId={post._id}/>;
+            return <Post postId={post._id} key={post._id} />;
         });
     }
 
