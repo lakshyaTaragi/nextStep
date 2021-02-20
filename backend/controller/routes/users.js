@@ -125,7 +125,7 @@ router.get('/allChats/:userId', (req, res) => {
                path: 'profilePicture',
                match: {profilePicture: {$ne:''}}
            },
-           select: '-chatRooms -city -coaching -college -email -myPosts -password -school'
+           select: '-chatRooms -hometown -coaching -college -email -myPosts -password -school'
         },
         select: '-messages'     
     })

@@ -1,14 +1,11 @@
 import React from 'react'
 
-export const renderField = ({ input, label, type, meta: { touched, error } }) => (
-  <div>
-    <label>{label}</label>
-    <div>
-      <input {...input} placeholder={label} type={type} autoComplete="off" />
-      {touched && error && <span>{error}</span>}
-      {/* //! in last && just put the intended component  */}
+export const renderField = ({ input, placeholder, type, meta: { touched, error } }) => (
+    <div className={`field ${error && touched ? 'error':''}`}>
+      <label>{ placeholder} {touched && error && <span className="ui red horizontal label"> {error} </span>} </label>
+        <input {...input} placeholder={placeholder} type={type} autoComplete="off" />
+        {/* //! in last && just put the intended component  */}
     </div>
-  </div>
 );
 
 export const textInput = ({ input, type, placeholder }) => (

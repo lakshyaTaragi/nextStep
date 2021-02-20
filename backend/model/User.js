@@ -30,7 +30,7 @@ const UserSchema = new Schema({
         required: true
     },
     
-    city:{
+    hometown:{
         type: String,
         required: true
     },

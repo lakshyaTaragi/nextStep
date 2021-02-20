@@ -62,11 +62,13 @@ const Profile = (props) => {
 
                             <div className="extra">
                                 
-                                <div>From: {extraInfo.city}</div>
+                                <div>From: {extraInfo.hometown}</div>
                                 
                                 <div>School: {extraInfo.school.name} ({extraInfo.school.city})</div>
                                 
-                                <div>Coaching: {extraInfo.coaching.name} ({extraInfo.coaching.city})</div>
+                                {extraInfo.coaching &&
+                                    <div>Coaching: {extraInfo.coaching.name} ({extraInfo.coaching.city})</div>
+                                }
                                 
                                 {extraInfo.isMentor?<div>College: {extraInfo.college.name}</div>:null}
 

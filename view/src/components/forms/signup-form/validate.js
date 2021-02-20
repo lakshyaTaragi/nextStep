@@ -17,11 +17,11 @@ export const validate = formValues => {
         errors.password = 'Required'
     } else if (formValues.password.length < 5) {
         errors.password = 'Password must be atleast 5 characters long'
-    } else if(formValues.password !== formValues.password2){
+    } else if(formValues.password2 && formValues.password !== formValues.password2){
         errors.password2 = 'Passwords do not match' 
     }
 
-    if (!formValues.city) {errors.city = 'Required'}
+    if (!formValues.hometown) {errors.hometown = 'Required'}
     
     if (!formValues.school) {errors.school = 'Required'}
     if (!formValues.schoolCity) {errors.schoolCity = 'Required'}
