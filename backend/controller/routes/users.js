@@ -30,12 +30,26 @@ router.get('/populate/:username', (req, res) => {
 
 
 // Check if a user exists --> Signup async validation
-router.get('/check/:username', (req, res) => {
-    User.find({username: req.params.username}, (err, user) => {
+router.get('/check/:field/:type', (req, res) => {
+    const {field, type} = req.params;
+    const obj = {};
+    if(type==='username'){
+        obj.username = field;
+    }
+    if(type==='email'){
+        obj.email = field;
+    }   
+    User.find({ $or: [
+        {username: obj.username},
+        {email: obj.email}
+    ]}, (err, user) => {
         if(err) throw err;
-        if(!_.isEmpty(user)) res.send(true);
+        if(!_.isEmpty(user)){
+            res.send(true);
+        }
         else res.send(false);
-    })
+    });
+    
 });
 
 // Find and send information of multiple users by ids

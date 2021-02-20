@@ -57,6 +57,6 @@ export default reduxForm({
     forceUnregisterOnUnmount: true,     //* unregister fields on unmount
     validate,
     asyncValidate,
-    asyncChangeFields: ['username']
+    asyncChangeFields: ['username', 'email']
 })(FirstPage);
 

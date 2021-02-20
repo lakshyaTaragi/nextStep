@@ -53,44 +53,57 @@ const SecondPage = (props) => {
        
         return (
             <div>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form className="ui form" onSubmit={handleSubmit(onSubmit)}>
+                    
                     <Field 
+                        className="field"
                         name="firstName"
                         type="text"
                         component={renderField}
                         label="First Name"
                     />
+
                     <Field 
+                        className="field"
                         name="lastName"
                         type="text"
                         component={renderField}
                         label="Last Name"
                     />
+
                     <Field 
+                        className="field"
                         name="city"
                         type="text"
                         component={renderField}
                         label="City"
                     />
+
                     <Field 
-                        name="school"
-                        type="text"
-                        component={renderField}
-                        label="School"
-                    />
-                    <Field 
+                        className="field"
                         name="schoolCity"
                         type="text"
                         component={renderField}
                         label="School-city"
                     />
+
                     <Field 
+                        className="field"
+                        name="school"
+                        type="text"
+                        component={renderField}
+                        label="School"
+                    />
+
+                    <Field 
+                        className="field"
                         name="coaching"
                         type="text"
                         component={renderField}
                         label="Coaching"
                     />
                     <Field 
+                        className="field"
                         name="coachingCity"
                         type="text"
                         component={renderField}
@@ -98,6 +111,7 @@ const SecondPage = (props) => {
                     />
                     
                     {isMentor && <Field 
+                        className="field"
                         name="college"
                         type="text"
                         component={renderField}
