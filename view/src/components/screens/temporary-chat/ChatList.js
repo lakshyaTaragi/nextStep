@@ -23,13 +23,13 @@ const ChatList = (props) => {
                 if(chat){
                     // chat destructuring
                     const {name, username, isMentor, profilePicture, _id} = chat.members[0];
-                    console.log(chat._id);    
+                    // console.log(chat.members[0]);    
     
                     return (
                         <React.Fragment key={_id}>
                             <div className="item">
                             <a className="ui tiny image">
-                                {profilePicture ? renderImageFromDB(profilePicture, "") : defaultpic}
+                                {profilePicture ? renderImageFromDB(profilePicture, "") : <img src={defaultpic} />}
                             </a>
                             <div className="content">
                                 <ChatHead 
@@ -43,8 +43,15 @@ const ChatList = (props) => {
                     );
                 }
             })
-        } else {
+        } else if(chatInfo && chatInfo.length===0){
             return <div className="ui message red">No current chats</div>
+        } else if (!chatInfo){
+            return (
+                <div className="ui segment">
+                    <div className="ui active centered inline loader"></div>
+                    <p></p>
+                </div>
+            );
         }
     }
 
