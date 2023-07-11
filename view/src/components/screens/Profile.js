@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { populateInfo, renderImageFromDB } from '../../actions';
+import { populateInfo, renderImageFromDB, followToggle } from '../../actions';
 import Post from '../Post';
 import Chat from './temporary-chat/Chat';
 
@@ -15,9 +15,10 @@ const Profile = (props) => {
     
     const [content, setContent] = useState({posts: [], extraInfo: {}})
     const [chatOpen, setChatOpen] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(false);
 
     const { cu,                                                     //store
-         populateInfo, renderImageFromDB,                           //ac
+         populateInfo, renderImageFromDB, followToggle,                           //ac
          match: {params: {username}},                               //from location(history)
          location} = props;
     
@@ -26,12 +27,19 @@ const Profile = (props) => {
     
     useEffect(() => 
         populateInfo(username)
-        .then(response => 
+        .then(response => {
+            // console.log(response);
+            setIsFollowing(_.includes(response.followers, cu._id));
             setContent({
                 posts: response.myPosts, 
                 extraInfo: _.omit(response, 'myPosts')
-        }))  
+            });
+        })  
     ,[]);
+
+    // useEffect(() => {
+
+    // }, [isFollowing]);
 
     const renderPostsList = (myPosts) => {
         return myPosts.map(post => {
@@ -72,6 +80,9 @@ const Profile = (props) => {
                                 
                                 {extraInfo.isMentor?<div>College: {extraInfo.college.name}</div>:null}
 
+                                <div>Followers = {extraInfo.followers.length}</div>
+                                <div>Following = {extraInfo.following.length}</div>
+
                             </div>
                         </div>
                     </div>
@@ -95,6 +106,31 @@ const Profile = (props) => {
         }
     }
 
+    const renderFollowButton = (extraInfo) => {
+        // let isFollower = _.includes(extraInfo.follwers, cu._id);
+        
+        return (
+            <button 
+                className="ui button" 
+                type="button" 
+                onClick={() => {
+                    // console.log(isFollower); 
+                    followToggle(cu._id, content.extraInfo._id, isFollowing);
+                    
+                    //! later --> we need only numbers for followers and following
+                    // const ef = {...extraInfo};
+                    // let temp = ef.following.length;
+                    // ef.following.length = isFollowing ? temp-1 : temp+1;
+                    // setContent(ef);
+
+                    setIsFollowing(!isFollowing);
+                }}
+            >
+                {isFollowing ? 'Unfollow -' : 'Follow +'}
+            </button>
+        );
+    }
+
     const renderToggleButton = (username) => {
         if(username!==cu.username){          
             return (
@@ -109,6 +145,8 @@ const Profile = (props) => {
         <div>
 
             {renderProfileInfo(content.extraInfo)}
+
+            {content.extraInfo._id !== cu._id && renderFollowButton(content.extraInfo)}
      
             {renderToggleButton(username)}
 
@@ -130,6 +168,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps,{
     populateInfo,
-    renderImageFromDB
+    renderImageFromDB,
+    followToggle
 })(Profile);
 

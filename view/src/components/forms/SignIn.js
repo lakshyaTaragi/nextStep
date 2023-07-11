@@ -32,26 +32,44 @@ const SignIn = (props) => {
     };
 
     return(
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <div>{props.message}</div>
-            <Field
-                name="username"
-                type="text"
-                component={renderField}
-                label="Username"
-            />
-            <Field
-                name="password"
-                type="password"
-                component={renderField}
-                label="Password"
-            />
-            <div>
-                <button type="submit" disabled={pristine || submitting}>
-                    Submit
-                </button>
+        <div className="ui container  segment">
+
+            <div className="ui form">
+
+                <h3 className="ui block header">
+                    Signin <i class="sign in alternate icon"></i>
+                </h3>
+
+                <form onSubmit={handleSubmit(onSubmit)}>
+
+                    <div>{props.message}</div> 
+                    {/* //! TOAST */}
+
+                    <Field
+                        name="username"
+                        type="text"
+                        component={renderField}
+                        placeholder="Username"
+                    />
+                    <Field
+                        name="password"
+                        type="password"
+                        component={renderField}
+                        placeholder="Password"
+                    />
+                    
+                    <div>
+                        <button type="submit" className={`ui right labeled ${pristine || submitting ? 'disabled':''} icon primary button`}>
+                            Submit <i class="sign in alternate icon"/>
+                        </button>
+                    </div>
+
+                </form>
+
             </div>
-        </form>
+
+        </div>
+        
     );
 
 }; 

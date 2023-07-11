@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import history from '../history';
+import { Label } from 'semantic-ui-react'
 
-import { fetchPostById, deletePost, fetchComments } from '../actions';
+import { fetchPost, deletePost, fetchComments } from '../actions';
 
 import CommentForm from './forms/CommentForm';
 import UserTag from './UserTag';
@@ -16,10 +17,10 @@ const Post = (props) => {
     const [showComments, setShowComments] = useState(false);
     const [comments, setComments] = useState([]);
 
-    const { currentUser, fetchPostById, deletePost, postId, fetchComments} = props;
+    const { currentUser, fetchPost, deletePost, postId, fetchComments} = props;
 
     useEffect(() => {
-        fetchPostById(postId).then(response => {
+        fetchPost(postId, true).then(response => {
             const {name, username, isMentor} = response;
             setPersonInfo({name, username, isMentor})
             setPost(response._doc);
@@ -35,7 +36,7 @@ const Post = (props) => {
 
     const postLoading = () => (
         // Content loading animation
-        <div className="card ui raised segment" style={{width: "18rem"}} >
+        <div className="ui card raised segment" style={{width: "18rem"}} >
             <div className="card-body ui placeholder">    
                 <div className="post content">
                     <h5 className="card-title line"></h5>                   
@@ -55,26 +56,41 @@ const Post = (props) => {
             .then(res => setComments(res));  
         }
     }
+
+    const renderTags = tags => {
+        return _.map(tags, tag => (
+            <Label 
+                key={tag.toString()} as='a' tag color='teal' 
+                onClick={() => fetchPost(tag, false)}
+            >
+                {tag}
+            </Label>)
+        );
+    }
     
     // const authorizedOptions = () => {    //!--> AFTER DELETION BUG SOLVING
 
     // };
 
     if(!_.isEmpty(post)){
+        console.log(post);
         return (
-            <div className="card ui raised segment" style={{width: "18rem"}}>
+            <div className="ui card raised segment" style={{width: "18rem"}}>
                 <div className="card-body">
+                    
+                    {post.isQuestion && <a className="ui red ribbon label">Question</a>}
 
-                        <UserTag 
-                            name = {personInfo.name}
-                            username = {personInfo.username}
-                            linkObj = {
-                                {
-                                    pathname: `/profile/${personInfo.username}`
-                                }
+                    <UserTag 
+                        name = {personInfo.name}
+                        username = {personInfo.username}
+                        linkObj = {
+                            {
+                                pathname: `/profile/${personInfo.username}`
                             }
-                            isMentor = {personInfo.isMentor} 
-                        />
+                        }
+                        isMentor = {personInfo.isMentor} 
+                    />
+
 
                     {/* Post's content */}
                     <div className="post content">
@@ -82,7 +98,15 @@ const Post = (props) => {
                         <p className="card-text">{post.content}</p>
                     </div>
         
+                    {/* <a className="ui tag label">New</a>
+                    <a className="ui red tag label">Upcoming</a>
+                    <a className="ui teal tag label">Featured</a>
+                     */}
                     
+                    <Label.Group size='medium'>
+                        {renderTags(post.tags)}
+                    </Label.Group>
+
                     {/* Update/Delete options to authorized user */}
                     {!_.isEmpty(currentUser) && post.postedBy === currentUser._id ? 
                         
@@ -140,7 +164,7 @@ const Post = (props) => {
 const mapStateToProps = state => ({currentUser:state.auth.currentUser});
 
 export default connect(mapStateToProps, {
-    fetchPostById,
+    fetchPost,
     deletePost,
     fetchComments
 })(Post);

@@ -65,6 +65,13 @@ export const fetchUsersByIds = (userIds) => async () => {
     return response.data;
 };
 
+export const followToggle = (currentId, userId, isFollowing) => async () => {
+    // console.log(currentId, userId, isFollowing);
+    const response = await users.post('/followToggle', {currentId, userId, isFollowing});
+    console.log(response.data);
+    return response.data;
+};
+
 // export const matchUsernameParam = async (currentUser, pathUsername) => {
 //    if(currentUser.username === pathUsername) return true;
 //    return false;
@@ -81,15 +88,19 @@ export const createPost = (formValues, userId) => async () => {
     );    
 } 
 
-// Fetch all posts --> to create home feed
+// Fetch all posts --> to create home feed 
+
+//! later change to posts of following, top posts
+
 export const fetchAllPosts = () => async () => {
     const response = await posts.get('/allPosts');
     return response.data;
 };
 
 // Fetch post with postId
-export const fetchPostById = (postId) => async () => {
-    const response = await posts.get(`fetchpost/${postId}`);
+export const fetchPost = (key, isId) => async () => {
+    const response = await posts.get(`fetchpost/${key}/${isId}`);
+    if(!isId) console.log(response.data);
     return response.data;
 };
 

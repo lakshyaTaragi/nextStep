@@ -10,15 +10,29 @@ const PostSchema = new Schema({
         ref: 'User',
         required: true
     },
+
     title: {
         type: String,
         required: true
     },
+
     content: {
         type: String,
         required: true
     },
-    upvotes: Number,
+
+    upvoters: [{
+        type: ObjectId,
+        ref: 'User'
+    }],
+
+    isQuestion: {
+        type: Boolean,
+        required: true
+    },
+
+    tags: [String],
+    
     comments: [{
         type: ObjectId,
         ref: 'Comment'

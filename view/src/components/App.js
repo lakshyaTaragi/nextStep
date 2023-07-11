@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route}  from 'react-router-dom'
+import { Router, Route}  from 'react-router-dom';
 import { connect } from 'react-redux';
 import { io } from 'socket.io-client';
 import _ from 'lodash';

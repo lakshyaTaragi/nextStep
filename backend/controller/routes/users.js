@@ -7,7 +7,7 @@ const router = express.Router();
 //Import mongo models
 const User = require('../../model/User');
 const ChatRoom = require('../../model/ChatRoom');
-// const {Coaching, School, College} = require('../../model/Institute');
+const {Coaching, School, College} = require('../../model/Institute');
 
 
 
@@ -136,6 +136,58 @@ router.get('/allChats/:userId', (req, res) => {
     });
 });
 
+
+// Suggest institute based on current input and/or city name
+router.get('/suggested/:city/:type/:currentValue', (req, res) => {
+    const {city, type, currentValue} = req.params;
+    var model;
+    if(type==='schools') model = School;
+    else if(type==='coachings') model = Coaching;
+    else model = College;
+    
+    if(typeof city==='undefined'){
+        model.find(
+            { $and: [
+                { city },
+                { name: { $regex: currentValue, $options: "i" } }, 
+            ]},            
+            (err, docs) => {
+                if(err) console.log(err);
+                console.log(docs)
+                res.json(docs);
+            }
+        ); 
+    } else {
+        model.find(
+            { name: { $regex: currentValue, $options: "i" } },            
+            (err, docs) => {
+                if(err) console.log(err);
+                console.log(docs)
+                res.json(docs);
+            }
+        );
+    }
+});
+
+
+// Follow-Unfollow
+router.post('/followToggle', (req, res) => {
+    const {currentId, userId, isFollowing} = req.body;
+    if(isFollowing){
+        // unfollow
+        console.log("unfollow");
+        User.findByIdAndUpdate(currentId, { $pull: { following: userId}}, (err) => console.log(err));        
+        User.findByIdAndUpdate(userId, { $pull: { followers: currentId}}, (err) => console.log(err));  
+    }
+    else{
+        // follow
+        console.log("follow");
+        User.findByIdAndUpdate(currentId, { $push: { following: userId}}, (err) => console.log(err));
+        User.findByIdAndUpdate(userId, { $push: { followers: currentId}}, (err) => console.log(err));
+    }
+    res.send(true);
+
+});
 
 
 //Export router

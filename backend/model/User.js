@@ -64,8 +64,17 @@ const UserSchema = new Schema({
     chatRooms:[{
         type:ObjectId,
         ref:'ChatRoom'
-    }]
+    }],
 
+    followers: [{
+        type:ObjectId,
+        ref:'User'
+    }],
+    
+    following: [{
+        type:ObjectId,
+        ref:'User'
+    }]
 });
 
 // Create a model of that schema

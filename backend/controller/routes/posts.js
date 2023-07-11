@@ -13,12 +13,16 @@ const {Post, Comment} = require('../../model/Post');
 //! createpost
 router.post('/createpost', (req, res) => {
     
-    const {title, content, userId} = req.body;
+    const {title, content, isQuestion, userId, tags} = req.body;
+    // console.log(tags, "123");
+    // tags.map(tag => tag = tag.tolowercase())
     
     const post = new Post({
       postedBy: objectId(userId),
       title,
-      content
+      content,
+      isQuestion,
+      tags
     });
 
     // save post in Posts db
@@ -53,26 +57,36 @@ router.get('/allPosts', (req, res) => {
 
 
 // Fetch a post by postId
-router.get('/fetchpost/:postId', (req, res) => {
-    const {postId} = req.params;
-    Post.findById(postId, (err, foundPost) => {
-        if(err) throw err;
-        else {
-            User.findById(foundPost.postedBy, (err, person) => {
-                if(err) throw err;                
-                else{
-                    const {name, username, isMentor} = person;
-                    res.send({...foundPost,
-                    name, username, isMentor});
-            }});            
-        }
-    });
+router.get('/fetchpost/:key/:isId', (req, res) => {
+    const {key, isId} = req.params;
+    console.log(isId);
+    if(isId==="true"){
+        Post.findById(key, (err, foundPost) => {
+            if(err) throw err;
+            else {
+                User.findById(foundPost.postedBy, (err, person) => {
+                    if(err) throw err;                
+                    else{
+                        const {name, username, isMentor} = person;
+                        res.send({...foundPost,
+                        name, username, isMentor});
+                }});            
+            }
+        });
+    }
+    else{
+        Post.find({tags: key}, (err, foundPosts) => {
+            if(err) throw err;
+            else res.send(foundPosts);
+        })
+    }
 });
 
 // ! update post details with postId
 router.patch('/updatepost', (req, res) => {
-    const {title, content, postId} = req.body;
-    Post.findByIdAndUpdate({_id:postId}, {title, content}, (err) => {
+    const {title, content, isQuestion, postId, tags} = req.body;
+    console.log(tags, "123");
+    Post.findByIdAndUpdate({_id:postId}, {title, content, isQuestion, tags}, (err) => {
         if(err)  throw err;
         res.send(true);
     });

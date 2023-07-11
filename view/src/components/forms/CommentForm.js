@@ -2,7 +2,7 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { textInput } from '../forms/renderField';
-import { createComment, fetchPostById, fetchComments } from '../../actions'; 
+import { createComment, fetchPost, fetchComments } from '../../actions'; 
 
 const CommentForm = (props) => {
 
@@ -53,6 +53,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
     createComment,
-    fetchPostById,
+    fetchPost,
     fetchComments
 })(formWrapped);
